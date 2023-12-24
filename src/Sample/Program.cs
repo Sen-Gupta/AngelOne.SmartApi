@@ -6,6 +6,8 @@ using AngelOne.SmartApi.Clients.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using System.Globalization;
+
 namespace AngelOne.SmartApi.Client.Sample
 {
     internal class Program
@@ -19,6 +21,7 @@ namespace AngelOne.SmartApi.Client.Sample
 
             // Use GetRequiredService to ensure that the service is available
             var marketDataClient = serviceProvider.GetRequiredService<MarketDataClient>();
+            
 
             // Login
             var profile = await marketDataClient.GetProfile();   
@@ -37,7 +40,18 @@ namespace AngelOne.SmartApi.Client.Sample
             else
             {
                 Console.WriteLine($"Quotes: {quoteResult.Quotes.Count}");
-            }   
+            }
+            
+            //Candle Request
+            var candleRequest = new CandleRequest();
+            candleRequest.SymbolToken = "3045";
+            candleRequest.Exchange = Exchanges.NSE.ToString();
+            candleRequest.Interval = Constants.CANDLE_INTERVAL.ONE_DAY;
+            candleRequest.FromDate = DateTime.Now.Date.AddDays(-7).ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+            candleRequest.ToDate = DateTime.Now.Date.AddDays(-2).ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+            
+            var candleResponse = await marketDataClient.GetCandle(candleRequest);
+            var candles = candleResponse?.GetCandle();
 
             return 0; // or another exit code if needed
         }
