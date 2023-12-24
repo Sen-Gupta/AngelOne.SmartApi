@@ -29,7 +29,15 @@ namespace AngelOne.SmartApi.Client.Sample
             quoteRequest.Mode = Modes.FULL.ToString();
             quoteRequest.ExchangeNameTokens.Add("NSE", new List<string> { "3045"});
 
-            var quoteResponse = await marketDataClient.GetQuotes(quoteRequest);
+            var quoteResult = await marketDataClient.GetQuotes(quoteRequest);
+            if(quoteResult.HasFailedQuotes)
+            {
+                Console.WriteLine($"Failed Quotes: {quoteResult.FailedQuotes.Count}");
+            }
+            else
+            {
+                Console.WriteLine($"Quotes: {quoteResult.Quotes.Count}");
+            }   
 
             return 0; // or another exit code if needed
         }

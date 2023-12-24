@@ -103,9 +103,9 @@ namespace AngelOne.SmartApi.Clients
         }
 
 
-        public async Task<List<Quote>> GetQuotes(QuoteRequest quoteRequest)
+        public async Task<QuoteResult> GetQuotes(QuoteRequest quoteRequest)
         {
-            List<Quote> quotes = new List<Quote>();
+            QuoteResult quotes = new QuoteResult();
             try
             {
                 System.Console.WriteLine($"Making Quotes Request at {_httpClient.BaseAddress}{_smartApiSettings.Endpoints.Quote}.");
@@ -142,7 +142,7 @@ namespace AngelOne.SmartApi.Clients
                         quoteResponse.Message.ToLower() == "success" &&
                         string.IsNullOrEmpty(quoteResponse.ErrorCode))
                     {
-                        return quoteResponse.Results.Quotes;
+                        return quoteResponse.Results;
                     }
                     else
                     {

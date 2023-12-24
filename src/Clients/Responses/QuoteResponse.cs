@@ -7,14 +7,16 @@ namespace AngelOne.SmartApi.Clients.Responses
     {
         [JsonPropertyName("data")]
         public QuoteResult Results { get; set; }
+         
     }
 
     public class QuoteResult
     {
         [JsonPropertyName("fetched")]
-        public List<Quote> Quotes { get; set; }
+        public List<Quote> Quotes { get; set; } = new List<Quote>();
 
         [JsonPropertyName("unfetched")]
-        public List<FailedQuote> FailedQuotes { get; set; }
+        public List<FailedQuote> FailedQuotes { get; set; } = new List<FailedQuote>();
+        public bool HasFailedQuotes => FailedQuotes?.Count > 0;
     }
 }
