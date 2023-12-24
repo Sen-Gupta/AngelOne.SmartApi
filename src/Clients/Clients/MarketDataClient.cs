@@ -14,8 +14,8 @@ namespace AngelOne.SmartApi.Clients
         private readonly HttpClient _httpClient;
         public MarketDataClient(IConfiguration configuration, HttpClient httpClient)
         {
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _configuration = configuration;
-            _httpClient = httpClient;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace AngelOne.SmartApi.Client.Sample
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task<int> Main(string[] args)
         {
             //Registering the smart api clients
             var serviceProvider = new ServiceCollection()
@@ -19,6 +19,9 @@ namespace AngelOne.SmartApi.Client.Sample
             var loginClient = serviceProvider.GetRequiredService<AngelOneLoginClient>();
 
             // Use the loginClient instance as needed
+            await loginClient.Login();
+            
+            return 0; // or another exit code if needed
         }
     }
 }

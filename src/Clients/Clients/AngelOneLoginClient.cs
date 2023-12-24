@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AngelOne.SmartApi.Clients.Settings;
+
+using Microsoft.Extensions.Configuration;
 
 using System;
 using System.Collections.Generic;
@@ -16,8 +18,16 @@ namespace AngelOne.SmartApi.Clients
         private readonly IConfiguration _configuration;
         public AngelOneLoginClient(IConfiguration configuration, HttpClient httpClient)
         {
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _configuration = configuration;
-            _httpClient = httpClient;
+        }
+
+        public async Task<string> Login()
+        {
+            var smartApiSettings = _configuration.GetSection("SmartApi").Get<SmartApiSettings>();
+            System.Console.WriteLine($"Making Login Request at {_httpClient.BaseAddress}.");
+
+            return await Task.FromResult(string.Empty);
         }
     }
 }

@@ -14,8 +14,8 @@ namespace AngelOne.SmartApi.Clients
         private readonly IConfiguration _configuration;
         public HistoricalDataClient(IConfiguration configuration, HttpClient httpClient)
         {
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _configuration = configuration;
-            _httpClient = httpClient;
         }
     }
 }
