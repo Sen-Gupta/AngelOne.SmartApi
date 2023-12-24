@@ -15,6 +15,6 @@ namespace AngelOne.SmartApi.Clients.Responses
         public List<Quote> Quotes { get; set; }
 
         [JsonPropertyName("unfetched")]
-        public List<Quote> FailedQuotes { get; set; }
+        public List<FailedQuote> FailedQuotes { get; set; }
     }
 }
