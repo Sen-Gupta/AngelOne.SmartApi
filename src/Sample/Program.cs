@@ -1,4 +1,6 @@
 ﻿using AngelOne.SmartApi.Clients;
+using AngelOne.SmartApi.Clients.Enums;
+using AngelOne.SmartApi.Clients.Requests;
 using AngelOne.SmartApi.Clients.Settings;
 
 using Microsoft.Extensions.Configuration;
@@ -18,9 +20,16 @@ namespace AngelOne.SmartApi.Client.Sample
             // Use GetRequiredService to ensure that the service is available
             var marketDataClient = serviceProvider.GetRequiredService<MarketDataClient>();
 
-            // Api Login
+            // Login
             var profile = await marketDataClient.GetProfile();   
             Console.WriteLine($"Profile: {profile?.Name}");
+
+            //Quotes
+            var quoteRequest = new QuoteRequest();
+            quoteRequest.Mode = Modes.FULL.ToString();
+            quoteRequest.ExchangeNameTokens.Add("NSE", new List<string> { "3045"});
+
+            var quoteResponse = await marketDataClient.GetQuotes(quoteRequest);
 
             return 0; // or another exit code if needed
         }
