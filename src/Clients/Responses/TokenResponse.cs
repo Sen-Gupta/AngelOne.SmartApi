@@ -7,16 +7,8 @@ using System.Threading.Tasks;
 
 namespace AngelOne.SmartApi.Clients.Responses
 {
-    public class TokenResponse
+    public class TokenResponse : BaseResponse
     {
-        [JsonPropertyName("status")]
-        public bool Status { get; set; }
-
-        [JsonPropertyName("message")]
-        public string Message { get; set; }
-
-        [JsonPropertyName("errorcode")]
-        public string ErrorCode { get; set; }
 
         [JsonPropertyName("data")]
         public Tokens Tokens { get; set; }

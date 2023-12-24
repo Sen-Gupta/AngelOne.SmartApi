@@ -11,7 +11,7 @@ namespace AngelOne.SmartApi.Clients.Utilities
 {
     public static class ResponseUtility
     {
-        public static async Task<TokenResponse> ParseTokenResponse(HttpResponseMessage response)
+        public static async Task<T> ParseResponse<T>(HttpResponseMessage response) where T : class, new()
         {
             try
             {
@@ -19,7 +19,7 @@ namespace AngelOne.SmartApi.Clients.Utilities
                 Console.WriteLine(responseString);
                 if (!string.IsNullOrEmpty(responseString))
                 {
-                    return JsonSerializer.Deserialize<TokenResponse>(responseString);
+                    return JsonSerializer.Deserialize<T>(responseString);
                 }
                 return null;
             }
@@ -31,8 +31,7 @@ namespace AngelOne.SmartApi.Clients.Utilities
                 return null;
             }
         }
-
-        public static void HandleLoginFailure(TokenResponse loginResponse)
+        public static void HandleLoginFailure(BaseResponse loginResponse)
         {
             // Handle specific failure scenarios based on the content of loginResponse
             System.Console.WriteLine($"Login failed. Status: {loginResponse?.Status}, Message: {loginResponse?.Message}, ErrorCode: {loginResponse?.ErrorCode}");

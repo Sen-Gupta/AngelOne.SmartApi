@@ -31,22 +31,13 @@ namespace AngelOne.SmartApi.Clients
             _smartApiSettings = _configuration.GetSection("SmartApi").Get<SmartApiSettings>();
         }
 
-        public async Task<bool> Login(bool loginToHistoricalDataApi = false)
+        public async Task<bool> Login(bool IsHistorical = false)
         {
             try
             {
                 System.Console.WriteLine($"Making Login Request at {_httpClient.BaseAddress}.");
-                var apiKey = string.Empty;
-                
-                if (loginToHistoricalDataApi)
-                {
-                    apiKey = _smartApiSettings.Credentials.HistoricalDataKey;                                       
-                }
-                else
-                {
-                    apiKey = _smartApiSettings.Credentials.MarketDataKey;  
-                }
-                
+                var apiKey = _smartApiSettings?.GetAPIKey(IsHistorical);
+                                
                 if(string.IsNullOrEmpty(apiKey))
                 {
                     System.Console.WriteLine("API Key is null or empty. Please check your appsettings.json file.");
@@ -59,7 +50,7 @@ namespace AngelOne.SmartApi.Clients
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var loginResponse = await ResponseUtility.ParseTokenResponse(response);
+                    var loginResponse = await ResponseUtility.ParseResponse<TokenResponse>(response);
 
                     if (loginResponse != null &&
                         loginResponse.Status &&
@@ -90,6 +81,20 @@ namespace AngelOne.SmartApi.Clients
 
             return false;
         }
+
+        public async Task<bool> EnsureSession(bool IsHistorical = false)
+        {
+            var IsLoginValid = _tokenManager.IsLoginValid(IsHistorical);
+            if(IsLoginValid)
+            {
+                return true;
+            }
+            else
+            {
+                return await Login(IsHistorical);
+            }
+        }
+
         private LoginRequest GetLoginRequest()
         {
             LoginRequest loginRequest = new LoginRequest();

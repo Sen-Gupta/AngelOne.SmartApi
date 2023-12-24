@@ -16,11 +16,12 @@ namespace AngelOne.SmartApi.Client.Sample
            .BuildServiceProvider();
 
             // Use GetRequiredService to ensure that the service is available
-            var loginClient = serviceProvider.GetRequiredService<AngelOneLoginClient>();
+            var marketDataClient = serviceProvider.GetRequiredService<MarketDataClient>();
 
             // Api Login
-            await loginClient.Login();
-            
+            var profile = await marketDataClient.GetProfile();   
+            Console.WriteLine($"Profile: {profile?.Name}");
+
             return 0; // or another exit code if needed
         }
     }

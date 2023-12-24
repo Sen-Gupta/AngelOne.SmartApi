@@ -31,7 +31,7 @@ namespace AngelOne.SmartApi.Clients
 
             services.AddHttpClient<AngelOneTokenClient>(client =>
             {
-                client.BaseAddress = new Uri($"{smartApiSettings.Endpoints.BaseUrls.API}{smartApiSettings.Endpoints.Token}");
+                client.BaseAddress = new Uri($"{smartApiSettings.Endpoints.BaseUrls.Auth}{smartApiSettings.Endpoints.Token}");
                 // Configure other HttpClient settings as needed
             });
 

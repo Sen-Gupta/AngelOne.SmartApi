@@ -9,11 +9,45 @@ namespace AngelOne.SmartApi.Clients.Managers
 {
     public class TokenManager
     {
+        private Tokens _marketLoginToken;
+        private Tokens _historicalLoginToken;
 
-        private Tokens _loginToken = new Tokens();
-        private Tokens _MarketDataAPIToken = new Tokens();
-        private Tokens _HistoricalDataAPIToken = new Tokens();
+        private Tokens _MarketDataAPIToken;
+        private Tokens _HistoricalDataAPIToken;
 
+
+        public bool IsLoginValid(bool IsHistorical = false)
+        {
+            DateTime? validTill;
+            if(IsHistorical)
+            {
+               validTill = _historicalLoginToken?.Expiry;
+            }
+            else
+            {
+                validTill = _marketLoginToken?.Expiry;
+            }
+            return validTill > DateTime.UtcNow;
+        }
+
+        /// <summary>
+        /// We need to validate the access token validity
+        /// </summary>
+        /// <param name="IsHistorical"></param>
+        /// <returns></returns>
+        public bool IsTokenValid(bool IsHistorical = false)
+        {
+            Tokens tokens;
+            if (IsHistorical)
+            {
+                tokens = _HistoricalDataAPIToken;
+            }
+            else
+            {
+                tokens = _MarketDataAPIToken;
+            }
+            return tokens != null;
+        }
 
         public bool IsAccessTokenValid(string accessToken, string secretKey)
         {
@@ -49,36 +83,55 @@ namespace AngelOne.SmartApi.Clients.Managers
             }
         }
 
-
         //Setters
-        public void SetLoginToken(Tokens token)
+        public void SetLoginToken(Tokens token, bool IsHistorical = false)
         {
-            _loginToken = token;
             //Token is expired in 5:30 AM from the date of login
-            _loginToken.Expiry = DateTime.UtcNow.Date.AddDays(1).AddHours(5).AddMinutes(30);
-        }
-        public void SetMarketDataAPIToken(Tokens token)
-        {
-            _MarketDataAPIToken = token;
+            token.Expiry = DateTime.UtcNow.Date.AddDays(1).AddHours(5).AddMinutes(30);
+            if(IsHistorical)
+            {
+                _historicalLoginToken = token;
+            }
+            else
+            {
+                _marketLoginToken = token;
+            }
         }
 
-        public void SetHistoricalDataAPIToken(Tokens token)
+        public void SetAPIToken(Tokens token, bool IsHistorical = false)
         {
-            _HistoricalDataAPIToken = token;
+            if (IsHistorical)
+            {
+                _HistoricalDataAPIToken = token;
+            }
+            else
+            {
+                _MarketDataAPIToken = token;
+            }
         }
 
         //Getters
-        public Tokens GetLoginToken()
+        public Tokens GetLoginToken(bool IsHistorical = false)
         {
-            return _loginToken;
+            if(IsHistorical)
+            {
+                return _historicalLoginToken;
+            }
+            else
+            {
+                return _marketLoginToken;
+            }
         }
-        public Tokens GetMarketDataAPIToken()
+        public Tokens GetAPIToken(bool IsHistorical = false)
         {
-            return _MarketDataAPIToken;
-        }
-        public Tokens GetHistoricalDataAPIToken()
-        {
-            return _HistoricalDataAPIToken;
+            if (IsHistorical)
+            {
+                return _HistoricalDataAPIToken;
+            }
+            else
+            {
+                return _MarketDataAPIToken;
+            }
         }
     }
 }
