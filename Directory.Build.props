@@ -1,0 +1,34 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>12.0</LangVersion>
+    <NoWarn>NU1701</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AspNetCoreVersion>8.0.0</AspNetCoreVersion>
+  </PropertyGroup>
+
+
+
+  <!-- 'Microsoft.AspNetCore' packages that are not included in the ASP.NET Core shared framework -->
+  <PropertyGroup>
+    <MicrosoftAspNetCoreOwin>$(AspNetCoreVersion)</MicrosoftAspNetCoreOwin>
+  </PropertyGroup>
+  
+  
+  <!-- 'Microsoft.EntityFrameWork' packages that are not included in the ASP.NET Core shared framework -->
+  <PropertyGroup>
+    <MicrosoftEntityFrameworkCore>$(AspNetCoreVersion)</MicrosoftEntityFrameworkCore>
+  </PropertyGroup>
+
+  <!-- 'Microsoft.Extensions' packages that are not included in the ASP.NET Core shared framework -->
+  <PropertyGroup>
+    <MicrosoftExtensionsCachingStackExchangeRedis>$(AspNetCoreVersion)</MicrosoftExtensionsCachingStackExchangeRedis>
+  </PropertyGroup>
+
+  <!-- 3rd Party packages -->
+  <PropertyGroup>
+   
+  </PropertyGroup>
+
+</Project>
