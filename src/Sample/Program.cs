@@ -18,7 +18,7 @@ namespace AngelOne.SmartApi.Client.Sample
             // Use GetRequiredService to ensure that the service is available
             var loginClient = serviceProvider.GetRequiredService<AngelOneLoginClient>();
 
-            // Use the loginClient instance as needed
+            // Api Login
             await loginClient.Login();
             
             return 0; // or another exit code if needed

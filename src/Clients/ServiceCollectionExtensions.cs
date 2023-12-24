@@ -1,4 +1,5 @@
-﻿using AngelOne.SmartApi.Clients.Settings;
+﻿using AngelOne.SmartApi.Clients.Managers;
+using AngelOne.SmartApi.Clients.Settings;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,6 +51,7 @@ namespace AngelOne.SmartApi.Clients
 
             // Register other services or dependencies needed by AngelOneLoginClient
             services.TryAddSingleton(_ => configuration);
+            services.TryAddSingleton<TokenManager>();
 
             return services;
         }

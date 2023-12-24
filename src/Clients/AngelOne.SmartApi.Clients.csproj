@@ -12,6 +12,9 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(AspNetCoreVersion)" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="$(AspNetCoreVersion)" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="$(AspNetCoreVersion)" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="$(IdentityModelVersion)" />
+    <PackageReference Include="Otp.NET" Version="$(OTPNetVersion)" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="$(IdentityModelVersion)" />
   </ItemGroup>
 
 </Project>

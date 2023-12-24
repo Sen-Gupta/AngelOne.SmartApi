@@ -18,7 +18,7 @@
   
   <!-- 'Microsoft.EntityFrameWork' packages that are not included in the ASP.NET Core shared framework -->
   <PropertyGroup>
-    <MicrosoftEntityFrameworkCore>$(AspNetCoreVersion)</MicrosoftEntityFrameworkCore>
+    <IdentityModelVersion>7.0.3</IdentityModelVersion>
   </PropertyGroup>
 
   <!-- 'Microsoft.Extensions' packages that are not included in the ASP.NET Core shared framework -->
@@ -28,7 +28,7 @@
 
   <!-- 3rd Party packages -->
   <PropertyGroup>
-   
+    <OTPNetVersion>1.3.0</OTPNetVersion>
   </PropertyGroup>
 
 </Project>
