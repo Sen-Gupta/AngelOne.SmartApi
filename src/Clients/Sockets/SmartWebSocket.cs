@@ -1,11 +1,7 @@
 ﻿using AngelOne.SmartApi.Clients.Sockets.Interface;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AngelOne.SmartApi.Clients.Sockets
 {
@@ -117,6 +113,7 @@ namespace AngelOne.SmartApi.Clients.Sockets
             {
                 try
                 {
+                    
                     await _clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
                 }
                 catch (Exception e)

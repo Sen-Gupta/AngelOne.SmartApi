@@ -1,5 +1,7 @@
 ﻿using AngelOne.SmartApi.Clients.Managers;
+using AngelOne.SmartApi.Clients.Models;
 using AngelOne.SmartApi.Clients.Models.Ticks;
+using AngelOne.SmartApi.Clients.Requests;
 using AngelOne.SmartApi.Clients.Settings;
 using AngelOne.SmartApi.Clients.Sockets.Interface;
 
@@ -7,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 
 using System.Net.WebSockets;
 using System.Text;
+using System.Text.Json;
 
 namespace AngelOne.SmartApi.Clients.Sockets
 {
@@ -16,6 +19,9 @@ namespace AngelOne.SmartApi.Clients.Sockets
         System.Timers.Timer timer;
         private bool isTimerRunning = false;
         public Timer pingTimer;
+        
+        bool RESUBSCRIBE_FLAG = true;
+
         #endregion
 
         #region Events
@@ -59,6 +65,65 @@ namespace AngelOne.SmartApi.Clients.Sockets
             _webSocketV2.OnError += ErrorHandler;
             _webSocketV2.OnDataReceived += OnDataReceivedHandler;
         }
+
+        #region Subscriptions
+        public void Subscribe(SubscribeRequest subscribeRequest)
+        {
+            //Set Action as Subscribe if not set
+            subscribeRequest.Action = Constants.Sockets.Actions.SUBSCRIBE_ACTION;
+            try
+            {
+                //Todo: if mode == 4, then we can only have max 50 subscriptions
+                var subscribeRequestJson = JsonSerializer.Serialize(subscribeRequest);
+                SendAsync(subscribeRequestJson);
+                RESUBSCRIBE_FLAG = true;
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine($"Error occurred during subscribe: {e.Message}");
+                throw;
+            }
+        }
+
+        public void UnSubscribe(SubscribeRequest unSubscribeRequest)
+        {
+            //Set Action as UnSubscribe if not set
+            unSubscribeRequest.Action = Constants.Sockets.Actions.UNSUBSCRIBE_ACTION;
+            try
+            {
+                //Todo: if mode == 4, then we can only have max 50 subscriptions
+                var subscribeRequestJson = JsonSerializer.Serialize(unSubscribeRequest);
+                SendAsync(subscribeRequestJson);
+                RESUBSCRIBE_FLAG = true;
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine($"Error occurred during subscribe: {e.Message}");
+                throw;
+            }
+        }
+
+        public void ReSubscribe(SubscribeRequest reSubscribeRequest)
+        {
+            //Set Action as UnSubscribe if not set
+            reSubscribeRequest.Action = Constants.Sockets.Actions.SUBSCRIBE_ACTION;
+            try
+            {
+                //Todo: if mode == 4, then we can only have max 50 subscriptions
+                var subscribeRequestJson = JsonSerializer.Serialize(reSubscribeRequest);
+                SendAsync(subscribeRequestJson);
+                RESUBSCRIBE_FLAG = true;
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine($"Error occurred during subscribe: {e.Message}");
+                throw;
+            }
+        }
+
+
+
+        #endregion
 
         #region Operations
         /// <summary>
@@ -177,7 +242,10 @@ namespace AngelOne.SmartApi.Clients.Sockets
             {
                 TickPong tickpong = new TickPong();
                 tickpong = ReadPong(Data);
-                OnTickPong(tickpong);
+                if(OnTickPong != null)
+                {
+                    OnTickPong(tickpong);
+                }
             }
             else
             {
@@ -208,7 +276,7 @@ namespace AngelOne.SmartApi.Clients.Sockets
             var epocSeconds = BitConverter.ToInt64(response.Skip(35).Take(8).ToArray(), 0);
             tickltp.ExchangeTimestam = epocSeconds;
             var ltp = BitConverter.ToInt32(response.Skip(43).Take(8).ToArray(), 0);
-            tickltp.last_traded_price = ltp;
+            tickltp.last_traded_price = ltp * 0.01;
             return tickltp;
         }
 
@@ -339,19 +407,18 @@ namespace AngelOne.SmartApi.Clients.Sockets
         /// </summary>
         private void CloseSocket()
         {
+            this.RESUBSCRIBE_FLAG = false;
             _webSocketV2.CloseSocket();
 
         }
         private void Heartbeat()
         {
-            int interval = 10; // Interval in seconds
-
             // Create a timer with the specified interval
-            timer = new System.Timers.Timer(interval * 1000);
+            timer = new System.Timers.Timer(Constants.Sockets.HeartBeatInterval * 1000);
 
             timer.Elapsed += (sender, e) =>
             {
-                Console.WriteLine($"Sending ping at {DateTime.UtcNow.ToLongTimeString()}.");
+                Console.WriteLine($"{DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")} sending ping.");
                 if (IsConnected)
                 {
                     _webSocketV2.SendAsync(Constants.Sockets.PING);

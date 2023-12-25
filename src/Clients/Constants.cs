@@ -1,13 +1,4 @@
-﻿using AngelOne.SmartApi.Clients.Models;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AngelOne.SmartApi.Clients
+﻿namespace AngelOne.SmartApi.Clients
 {
     public static class Constants
     {
@@ -41,9 +32,11 @@ namespace AngelOne.SmartApi.Clients
             public const string FULL = "SnapQuote";
             public const string QUOTE = "Quote";
             public const string LTP = "LTP";
+            public const string DEPTH = "Depth";
 
             public static readonly Dictionary<string, int> Codes = new Dictionary<string, int>
             {
+                {DEPTH, 4 },
                 {FULL, 3},
                 {QUOTE, 2},
                 {LTP, 1}
@@ -78,12 +71,30 @@ namespace AngelOne.SmartApi.Clients
         {
             public const string NSE = "NSE";
             public const string BSE = "BSE";
+            public static readonly Dictionary<string, int> Codes = new Dictionary<string, int>
+            {
+                {NSE, 1 },
+                {BSE, 3},
+            };
         }
 
         public static class Sockets
         {
+
             public const string TickerSocketUrl = "wss://smartapisocket.angelone.in/smart-stream";
             public const string  PING = "ping";
+            public const int HeartBeatInterval = 25;
+            
+
+            //Retry Strategies
+            public static class Retry
+            {
+                public const int MAX_ATTEMPTS = 1;
+                public const int STRATEGY = 0;
+                public const int DELAY = 10;
+                public const int MULTIPLIER = 2;
+                public const int DURATION = 60;
+            }
 
             //Headers
             public static class Headers
@@ -92,6 +103,12 @@ namespace AngelOne.SmartApi.Clients
                 public const string APIKEY = "x-api-key";
                 public const string CLIENTCODE = "x-client-code";
                 public const string FEEDTOKEN = "x-feed-token";
+            }
+
+            public static class Actions
+            {
+                public const int SUBSCRIBE_ACTION = 1;
+                public const int UNSUBSCRIBE_ACTION = 0;
             }
         }
     }

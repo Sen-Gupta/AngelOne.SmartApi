@@ -1,9 +1,7 @@
 ﻿using AngelOne.SmartApi.Clients;
 using AngelOne.SmartApi.Clients.Requests;
-using AngelOne.SmartApi.Clients.Settings;
 using AngelOne.SmartApi.Clients.Sockets;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using System.Globalization;
@@ -21,7 +19,7 @@ namespace AngelOne.SmartApi.Client.Sample
 
             // use Auth Client for explicit logout
             var authClient = serviceProvider.GetRequiredService<AngelOneAuthClient>();
-            
+
             // Use GetRequiredService to ensure that the service is available
             var marketDataClient = serviceProvider.GetRequiredService<MarketDataClient>();
 
@@ -34,11 +32,11 @@ namespace AngelOne.SmartApi.Client.Sample
             //Quotes
             var quoteRequest = new QuoteRequest();
             quoteRequest.Mode = Constants.Modes.FULL;
-            quoteRequest.ExchangeNameTokens.Add("NSE", new List<string> { "3045"});
+            quoteRequest.ExchangeNameTokens.Add("NSE", new List<string> { "3045" });
 
             //var quoteResult = await marketDataClient.GetQuotes(quoteRequest);
-            
-            
+
+
             //Candle Request
             var candleRequest = new CandleRequest();
             candleRequest.SymbolToken = "3045";
@@ -46,7 +44,7 @@ namespace AngelOne.SmartApi.Client.Sample
             candleRequest.Interval = Constants.CANDLE_INTERVAL.ONE_DAY;
             candleRequest.FromDate = DateTime.Now.Date.AddDays(-7).ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
             candleRequest.ToDate = DateTime.Now.Date.AddDays(-2).ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
-            
+
             //var candleResponse = await marketDataClient.GetCandle(candleRequest);
 
             //RMS Limit
@@ -54,10 +52,22 @@ namespace AngelOne.SmartApi.Client.Sample
 
             try
             {
-                  await tickerService.Connect();     
-                  
+                await tickerService.Connect();
+                //Print to console each ping
+                tickerService.OnTickPong += (message) =>
+                {
+                    Console.WriteLine($"{DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")} received Pong message: {message}");
+                };
+                tickerService.OnTickLtp += (message) =>
+                {
+                    Console.WriteLine($"{DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")} received LTP message: {message.token}={message.last_traded_price}");
+                };
+                var subscribeRequest = new SubscribeRequest();
+                subscribeRequest.Tokens.Mode = Constants.TickerModes.Codes[Constants.TickerModes.LTP];
+                subscribeRequest.Tokens.TokenList.Add(new Token { ExchangeType = Constants.Exchanges.Codes[Constants.Exchanges.NSE], Tokens = new List<string> { "3045", "11460" } });
+                tickerService.Subscribe(subscribeRequest);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
