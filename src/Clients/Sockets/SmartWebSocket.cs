@@ -9,19 +9,18 @@ using System.Threading.Tasks;
 
 namespace AngelOne.SmartApi.Clients.Sockets
 {
-    public class WebSocketV2: IWebSocketV2
+    public class SmartWebSocket: ISmartWebSocket
     {
         #region WebSocketv2
 
         private readonly ClientWebSocket _clientWebSocket = new ClientWebSocket();
-        private string _curl;
         private SemaphoreSlim _lockObject = new SemaphoreSlim(1, 1);
 
 
-        public event OnConnectHandler OnConnect;
-        public event OnCloseHandler OnClose;
-        public event OnDataHandler OnData;
-        public event OnErrorHandler OnError;
+        public event Connected OnConnect;
+        public event Closed OnClose;
+        public event DataReceived OnDataReceived;
+        public event Error OnError;
 
         public bool IsSocketOpen()
         {
@@ -31,9 +30,8 @@ namespace AngelOne.SmartApi.Clients.Sockets
             return _clientWebSocket.State == WebSocketState.Open;
         }
 
-        public void Connect(string Url, Dictionary<string, string> headers = null)
+        public async Task ConnectAsync(string Url, Dictionary<string, string> headers = null)
         {
-            _curl = Url;
             try
             {
                 // Initialize ClientWebSocket instance and connect with Url
@@ -45,7 +43,7 @@ namespace AngelOne.SmartApi.Clients.Sockets
                     }
                 }
 
-                _clientWebSocket.ConnectAsync(new Uri(_curl), CancellationToken.None).Wait();
+                await _clientWebSocket.ConnectAsync(new Uri(Url), CancellationToken.None);
 
                 OnConnect?.Invoke();
             }
@@ -96,7 +94,7 @@ namespace AngelOne.SmartApi.Clients.Sockets
                     }
                     else
                     {
-                        OnData?.Invoke(buffer, result.EndOfMessage, result.MessageType.ToString());
+                        OnDataReceived?.Invoke(buffer, result.EndOfMessage, result.MessageType.ToString());
                     }
                 }
                 catch (WebSocketException wsEx) when (wsEx.InnerException is IOException || wsEx.InnerException is ObjectDisposedException)
@@ -113,13 +111,13 @@ namespace AngelOne.SmartApi.Clients.Sockets
                 }
             }
         }
-        public void CloseSocket()
+        public async Task CloseSocket()
         {
             if (_clientWebSocket.State == WebSocketState.Open)
             {
                 try
                 {
-                    _clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).Wait();
+                    await _clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
                 }
                 catch (Exception e)
                 {
@@ -127,13 +125,13 @@ namespace AngelOne.SmartApi.Clients.Sockets
                 }
             }
         }
-        public void Heartbeat(string Message)
+        public async Task Heartbeat(string Message)
         {
             if (_clientWebSocket.State == WebSocketState.Open)
             {
                 try
                 {
-                    SendAsync(Message).Wait();
+                    await SendAsync(Message);
                 }
                 catch (Exception e)
                 {

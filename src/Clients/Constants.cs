@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,13 +38,13 @@ namespace AngelOne.SmartApi.Clients
         }
         public static class TickerModes
         {
-            public const string SNAP_QUOTE = "SnapQuote";
+            public const string FULL = "SnapQuote";
             public const string QUOTE = "Quote";
             public const string LTP = "LTP";
 
-            public static readonly Dictionary<string, int> TimeIntervals = new Dictionary<string, int>
+            public static readonly Dictionary<string, int> Codes = new Dictionary<string, int>
             {
-                {SNAP_QUOTE, 3},
+                {FULL, 3},
                 {QUOTE, 2},
                 {LTP, 1}
             };
@@ -77,6 +78,21 @@ namespace AngelOne.SmartApi.Clients
         {
             public const string NSE = "NSE";
             public const string BSE = "BSE";
+        }
+
+        public static class Sockets
+        {
+            public const string TickerSocketUrl = "wss://smartapisocket.angelone.in/smart-stream";
+            public const string  PING = "ping";
+
+            //Headers
+            public static class Headers
+            {
+                public const string AUTHORIZATION = "Authorization";
+                public const string APIKEY = "x-api-key";
+                public const string CLIENTCODE = "x-client-code";
+                public const string FEEDTOKEN = "x-feed-token";
+            }
         }
     }
 }

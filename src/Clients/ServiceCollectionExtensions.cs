@@ -54,8 +54,8 @@ namespace AngelOne.SmartApi.Clients
             // Register other services or dependencies needed by Clients
             services.TryAddSingleton(_ => configuration);
             services.TryAddSingleton<TokenManager>();
-            services.TryAddScoped<IWebSocketV2, WebSocketV2>();
-
+            services.TryAddScoped<ISmartWebSocket, SmartWebSocket>();
+            services.TryAddScoped<TickerService>();
             return services;
         }
     }

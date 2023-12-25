@@ -1,0 +1,414 @@
+﻿using AngelOne.SmartApi.Clients.Managers;
+using AngelOne.SmartApi.Clients.Models.Ticks;
+using AngelOne.SmartApi.Clients.Settings;
+using AngelOne.SmartApi.Clients.Sockets.Interface;
+
+using Microsoft.Extensions.Configuration;
+
+using System.Net.WebSockets;
+using System.Text;
+
+namespace AngelOne.SmartApi.Clients.Sockets
+{
+    public class TickerService
+    {
+        #region Private Variables
+        System.Timers.Timer timer;
+        private bool isTimerRunning = false;
+        public Timer pingTimer;
+        #endregion
+
+        #region Events
+        public delegate void OnConnected();
+        public delegate void OnClosed();
+        public delegate void OnTickReceived(Tick TickData);
+        public delegate void OnTickLtpReceived(TickLtp TickData);
+        public delegate void OnTickQuoteReceived(TickQuote TickData);
+        public delegate void OnTickPongReceived(TickPong TickData);
+        public delegate void OnErrored(string Message);
+        
+        public event OnConnected OnConnect;
+        public event OnClosed OnClose;
+        public event OnTickReceived OnTick;
+        public event OnTickLtpReceived OnTickLtp;
+        public event OnTickQuoteReceived OnTickQuote;
+        public event OnTickPongReceived OnTickPong;
+        public event OnErrored OnError;
+
+        #endregion
+
+        private readonly IConfiguration _configuration;
+        private readonly SmartApiSettings _smartApiSettings;
+        private readonly TokenManager _tokenManager;
+        private readonly ISmartWebSocket _webSocketV2;
+        private readonly AngelOneTokenClient _angelOneTokenClient;
+        public TickerService(
+            ISmartWebSocket webSocketV2,
+            IConfiguration configuration,
+            AngelOneTokenClient angelOneTokenClient,
+            TokenManager tokenManager
+            )
+        {
+            _angelOneTokenClient = angelOneTokenClient;
+            _webSocketV2 = webSocketV2;
+            _configuration = configuration;
+            _tokenManager = tokenManager;
+            _smartApiSettings = _configuration.GetSection("SmartApi").Get<SmartApiSettings>();
+            _webSocketV2.OnConnect += ConnectedHandler;
+            _webSocketV2.OnClose += CloseHandler;
+            _webSocketV2.OnError += ErrorHandler;
+            _webSocketV2.OnDataReceived += OnDataReceivedHandler;
+        }
+
+        #region Operations
+        /// <summary>
+        /// Start a WebSocket connection
+        /// </summary>
+        public async Task Connect()
+        {
+            Console.WriteLine("Connecting to WebSocket...");
+
+            //Lets ensure the Token first
+
+            bool IsValidSession =await _angelOneTokenClient.EnsureSession();
+            if(!IsValidSession)
+            {
+                Console.WriteLine("Failed creating sockect connection. Session is invalid.");
+                return;
+            }
+            var token = _tokenManager.GetAPIToken();
+            if (!IsConnected)
+            {
+                await _webSocketV2.ConnectAsync(Constants.Sockets.TickerSocketUrl,
+                         new Dictionary<string, string>()
+                         {
+                             [Constants.Sockets.Headers.AUTHORIZATION] = token.JwtToken,
+                             [Constants.Sockets.Headers.APIKEY] = _smartApiSettings.GetAPIKey(),
+                             [Constants.Sockets.Headers.CLIENTCODE] = _smartApiSettings.Credentials.ClientCode,
+                             [Constants.Sockets.Headers.FEEDTOKEN] = token.FeedToken
+                         }); 
+            }
+        }
+
+        /// <summary>
+        /// Send Request message to WebSocket
+        /// </summary>
+        public void SendAsync(string msg)
+        {
+            if (IsConnected)
+            {
+                _webSocketV2.SendAsync(msg);
+            }
+        }
+
+        /// <summary>
+        /// Receive response result from WebSocket
+        /// </summary>
+        public void ReceiveAsync()
+        {
+            if (IsConnected)
+            {
+                try
+                {
+                    _webSocketV2.ReceiveAsync();
+                }
+                catch (Exception ex)
+                {
+                    string errorMessage = ex.Message;
+                    // Invoke the OnError event and pass the error message
+                    OnError?.Invoke(errorMessage);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Events
+        private void ConnectedHandler()
+        {
+            OnConnect?.Invoke();
+            // Start the heartbeat method once connected
+            Heartbeat();
+        }
+        private void CloseHandler()
+        {
+            if (isTimerRunning)
+            {
+                timer.Stop();
+                isTimerRunning = false;
+            }
+
+            OnClose?.Invoke();
+        }
+        private void ErrorHandler(string Message)
+        {
+            // pipe the error message from ticker to the events
+            OnError?.Invoke(Message);
+        }
+
+        /// <summary>
+        /// Reads buffer data from raw binary data
+        /// </summary>
+        private void OnDataReceivedHandler(byte[] Data, bool EndOfMessage, string MessageType)
+        {
+            if (MessageType == Convert.ToString(WebSocketMessageType.Binary))
+            {
+                var sub_mod = Data.Skip(0).Take(1).ToArray();
+                if (sub_mod[0] == Constants.TickerModes.Codes[Constants.TickerModes.LTP])
+                {
+                    TickLtp tickltp = new TickLtp();
+                    tickltp = ReadLTP(Data);
+                    OnTickLtp(tickltp);
+                }
+                else if (sub_mod[0] == Constants.TickerModes.Codes[Constants.TickerModes.QUOTE])
+                {
+                    TickQuote tickquote = new TickQuote();
+                    tickquote = ReadQuote(Data);
+                    OnTickQuote(tickquote);
+                }
+                else if (sub_mod[0] == Constants.TickerModes.Codes[Constants.TickerModes.FULL])
+                {
+                    Tick tick = new Tick();
+                    tick = ReadFull(Data);
+                    OnTick(tick);
+                }
+            }
+            else if (MessageType == Convert.ToString(WebSocketMessageType.Text))
+            {
+                TickPong tickpong = new TickPong();
+                tickpong = ReadPong(Data);
+                OnTickPong(tickpong);
+            }
+            else
+            {
+                CloseSocket();
+            }
+        }
+        #endregion
+
+        #region Read Quotes
+        /// <summary>
+        /// 
+        /// Reads an ltp mode tick from raw binary data
+        /// </summary>
+        private TickLtp ReadLTP(byte[] response)
+        {
+            TickLtp tickltp = new TickLtp();
+            tickltp.mode = Constants.TickerModes.LTP;
+            int SubscriptionMode = response[0];
+            tickltp.subscription_mode = Convert.ToUInt16(SubscriptionMode);
+            int ExchangeType = response[1];
+            tickltp.exchange_type = Convert.ToUInt16(ExchangeType);
+            var token = Encoding.UTF8.GetString(response.Skip(2).Take(25).ToArray());
+            string[] parts = token.Split('\u0000');
+            tickltp.token = parts[0];
+            tickltp.sequence_number = BitConverter.ToInt64(response.Skip(27).Take(8).ToArray(), 0);
+            //DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            //TimeZoneInfo istZone = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
+            var epocSeconds = BitConverter.ToInt64(response.Skip(35).Take(8).ToArray(), 0);
+            tickltp.ExchangeTimestam = epocSeconds;
+            var ltp = BitConverter.ToInt32(response.Skip(43).Take(8).ToArray(), 0);
+            tickltp.last_traded_price = ltp;
+            return tickltp;
+        }
+
+        /// <summary>
+        /// Reads a quote mode tick from raw binary data
+        /// </summary>
+        private TickQuote ReadQuote(byte[] response)
+        {
+            TickQuote tickquote = new TickQuote();
+            tickquote.mode = Constants.TickerModes.QUOTE;
+            int SubscriptionMode = response[0];
+            tickquote.subscription_mode = Convert.ToUInt16(SubscriptionMode);
+            int exchangeType = response[1];
+            tickquote.exchange_type = response[1];
+            var token = Encoding.UTF8.GetString(response.Skip(2).Take(25).ToArray());
+            string[] parts = token.Split('\u0000');
+            tickquote.token = parts[0];
+            tickquote.sequence_number = BitConverter.ToInt64(response.Skip(27).Take(8).ToArray(), 0);
+            var exchangeTimeStampInMilliSeconds = BitConverter.ToInt64(response.Skip(35).Take(8).ToArray(), 0);
+            tickquote.ExchangeTimestam = exchangeTimeStampInMilliSeconds;
+            var ltp = BitConverter.ToInt64(response.Skip(43).Take(8).ToArray(), 0);
+            tickquote.last_traded_price = ltp;
+            tickquote.last_traded_quantity = BitConverter.ToInt64(response.Skip(51).Take(8).ToArray(), 0);
+            var averageTradedPrice = BitConverter.ToInt64(response.Skip(59).Take(8).ToArray(), 0);
+            tickquote.avg_traded_price = averageTradedPrice;
+            tickquote.vol_traded = BitConverter.ToInt64(response.Skip(67).Take(8).ToArray(), 0);
+            tickquote.total_buy_quantity = BitConverter.ToDouble(response.Skip(75).Take(8).ToArray(), 0);
+            tickquote.total_sell_quantity = BitConverter.ToDouble(response.Skip(83).Take(8).ToArray(), 0);
+            var openPriceOfTheDay = BitConverter.ToInt64(response.Skip(91).Take(8).ToArray(), 0);
+            tickquote.open_price_day = openPriceOfTheDay;
+            var highPriceOfTheDay = BitConverter.ToInt64(response.Skip(99).Take(8).ToArray(), 0);
+            tickquote.high_price_day = highPriceOfTheDay;
+            var lowPriceOfTheDay = BitConverter.ToInt64(response.Skip(107).Take(8).ToArray(), 0);
+            tickquote.low_price_day = lowPriceOfTheDay;
+            var closePrice = BitConverter.ToInt64(response.Skip(115).Take(8).ToArray(), 0);
+            tickquote.close_price = closePrice;
+            return tickquote;
+
+        }
+
+        /// <summary>
+        /// Reads a snapquote mode tick from raw binary data
+        /// </summary>
+        private Tick ReadFull(byte[] response)
+        {
+            Tick tick = new Tick();
+            tick.mode = Constants.TickerModes.FULL;
+            int SubscriptionMode = response[0];
+            tick.subscription_mode = Convert.ToUInt16(SubscriptionMode);
+            tick.exchange_type = response[1];
+            var token = Encoding.UTF8.GetString(response.Skip(2).Take(25).ToArray());
+            string[] parts = token.Split('\u0000');
+            tick.token = parts[0];
+            tick.sequence_number = BitConverter.ToInt64(response.Skip(27).Take(8).ToArray(), 0);
+            var exchangeTimeStampInMilliSeconds = BitConverter.ToInt64(response.Skip(35).Take(8).ToArray(), 0);
+            tick.ExchangeTimestam = exchangeTimeStampInMilliSeconds;
+            var ltp = BitConverter.ToInt64(response.Skip(43).Take(8).ToArray(), 0);
+            tick.last_traded_price = ltp;
+            tick.last_traded_quantity = BitConverter.ToInt64(response.Skip(51).Take(8).ToArray(), 0);
+            var averageTradedPrice = BitConverter.ToInt64(response.Skip(59).Take(8).ToArray(), 0);
+            tick.avg_traded_price = averageTradedPrice;
+            tick.vol_traded = BitConverter.ToInt64(response.Skip(67).Take(8).ToArray(), 0);
+            tick.total_buy_quantity = BitConverter.ToDouble(response.Skip(75).Take(8).ToArray(), 0);
+            tick.total_sell_quantity = BitConverter.ToDouble(response.Skip(83).Take(8).ToArray(), 0);
+            var openPriceOfTheDay = BitConverter.ToInt64(response.Skip(91).Take(8).ToArray(), 0);
+            tick.open_price_day = openPriceOfTheDay;
+            var highPriceOfTheDay = BitConverter.ToInt64(response.Skip(99).Take(8).ToArray(), 0);
+            tick.high_price_day = highPriceOfTheDay;
+            var lowPriceOfTheDay = BitConverter.ToInt64(response.Skip(107).Take(8).ToArray(), 0);
+            tick.low_price_day = lowPriceOfTheDay;
+            var closePrice = BitConverter.ToInt64(response.Skip(115).Take(8).ToArray(), 0);
+            tick.close_price = closePrice;
+            var epoch1 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var lastTradedTimestampInSeconds = BitConverter.ToInt64(response.Skip(123).Take(8).ToArray(), 0);
+            tick.last_traded_timestamp = lastTradedTimestampInSeconds;
+            tick.open_interest = BitConverter.ToInt64(response.Skip(131).Take(8).ToArray(), 0);
+            byte[] best5Bytes = response.Skip(147).Take(200).ToArray();
+            tick.bestfivedata = new BestFiveItem[10];
+            for (int i = 0; i < 10; i++)
+            {
+                var bestData = best5Bytes.Skip(i * 20).Take(20).ToArray();
+                tick.bestfivedata[i].buy_sell_flag = BitConverter.ToInt16(bestData.Skip(0).Take(2).ToArray(), 0);
+
+                tick.bestfivedata[i].quantity = BitConverter.ToInt64(bestData.Skip(2).Take(8).ToArray(), 0);
+
+                var price = BitConverter.ToInt64(bestData.Skip(10).Take(8).ToArray(), 0);
+                tick.bestfivedata[i].price = price;
+
+                tick.bestfivedata[i].orders = BitConverter.ToInt16(bestData.Skip(18).Take(2).ToArray(), 0);
+            }
+
+            var upperCircuitLimit = BitConverter.ToInt64(response.Skip(347).Take(8).ToArray(), 0);
+            tick.upper_circuit = upperCircuitLimit;
+            var lowerCircuitLimit = BitConverter.ToInt64(response.Skip(355).Take(8).ToArray(), 0);
+            tick.lower_circuit = lowerCircuitLimit;
+            var fiftyTwoWeekHighPrice = BitConverter.ToInt64(response.Skip(363).Take(8).ToArray(), 0);
+            tick.fiftytwo_week_high = fiftyTwoWeekHighPrice;
+            var fiftyTwoWeekLowPrice = BitConverter.ToInt64(response.Skip(371).Take(8).ToArray(), 0);
+            tick.fiftytwo_week_low = fiftyTwoWeekLowPrice;
+            return tick;
+        }
+
+        /// <summary>
+        /// Read a pong from websokect
+        /// </summary>
+        private TickPong ReadPong(byte[] response)
+        {
+            TickPong tickp = new TickPong();
+            var result_msg = Encoding.UTF8.GetString(response.Skip(0).Take(4).ToArray());
+            tickp.result = result_msg;
+            return tickp;
+        }
+
+        #endregion
+
+        #region Connection Methods
+
+        /// <summary>
+        /// Tells whether ticker is connected to server not.
+        /// </summary>
+        private bool IsConnected
+        {
+            get { return _webSocketV2.IsSocketOpen(); }
+        }
+
+        /// <summary>
+        /// Close a WebSocket connection
+        /// </summary>
+        private void CloseSocket()
+        {
+            _webSocketV2.CloseSocket();
+
+        }
+        private void Heartbeat()
+        {
+            int interval = 10; // Interval in seconds
+
+            // Create a timer with the specified interval
+            timer = new System.Timers.Timer(interval * 1000);
+
+            timer.Elapsed += (sender, e) =>
+            {
+                if (IsConnected)
+                {
+                    _webSocketV2.SendAsync(Constants.Sockets.PING);
+                }
+
+                if (IsConnected)
+                {
+                    _webSocketV2.ReceiveAsync();
+                }
+            };
+
+            // Start the timer
+            timer.Start();
+        }
+
+        /// <summary>
+        /// Send Request Message to Websocket
+        /// </summary>
+        public async void SetMode(string requestMessage)
+        {
+            if (requestMessage == null) return;
+
+            if (IsConnected)
+            {
+                await _webSocketV2.SendAsync(requestMessage);
+            }
+            if (IsConnected)
+            {
+                await _webSocketV2.ReceiveAsync();
+            }
+        }
+        public void InitiatePingTimer()
+        {
+            // Start the ping timer
+            pingTimer = new Timer(HandlePingTimeout!, null, TimeSpan.FromSeconds(20), Timeout.InfiniteTimeSpan);
+        }
+
+        public void ResetPingTimer()
+        {
+            // Cancel the previous timer if it exists
+            pingTimer?.Dispose();
+
+            // Create a new timer to check for ping within 20 seconds
+            pingTimer = new Timer(HandlePingTimeout!, null, TimeSpan.FromSeconds(20), Timeout.InfiniteTimeSpan);
+        }
+
+        public void HandlePingTimeout(object state)
+        {
+            // Ping timeout occurred, handle it accordingly
+            Console.WriteLine("Ping timeout. Reconnecting...");
+
+            //Thread.Sleep(10000);
+            // Perform necessary actions to handle the timeout and attempt to reconnect or handle the situation accordingly
+            // For example, you can call the OnError method to initiate the reconnection process
+            OnError("Ping timeout");
+            ResetPingTimer();
+        }
+
+        #endregion
+    }
+}
