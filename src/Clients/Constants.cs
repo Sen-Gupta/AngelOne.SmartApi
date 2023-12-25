@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AngelOne.SmartApi.Clients.Models;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,5 +35,20 @@ namespace AngelOne.SmartApi.Clients
                 {ONE_DAY, 2000}
             };
         }
+        public static class TickerModes
+        {
+            public const string SNAP_QUOTE = "SnapQuote";
+            public const string QUOTE = "Quote";
+            public const string LTP = "LTP";
+
+            public static readonly Dictionary<string, int> TimeIntervals = new Dictionary<string, int>
+            {
+                {SNAP_QUOTE, 3},
+                {QUOTE, 2},
+                {LTP, 1}
+            };
+        }
+
+
     }
 }

@@ -1,5 +1,7 @@
 ﻿using AngelOne.SmartApi.Clients.Managers;
 using AngelOne.SmartApi.Clients.Settings;
+using AngelOne.SmartApi.Clients.Sockets;
+using AngelOne.SmartApi.Clients.Sockets.Interface;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,33 +27,34 @@ namespace AngelOne.SmartApi.Clients
 
             services.AddHttpClient<AngelOneAuthClient>(client =>
             {
-                client.BaseAddress = new Uri($"{smartApiSettings.Endpoints.BaseUrls.Auth}{smartApiSettings.Endpoints.Login}");
+                client.BaseAddress = new Uri($"{smartApiSettings!.Endpoints.BaseUrls.Auth}{smartApiSettings.Endpoints.Login}");
                 // Configure other HttpClient settings as needed
             });
 
             services.AddHttpClient<AngelOneTokenClient>(client =>
             {
-                client.BaseAddress = new Uri($"{smartApiSettings.Endpoints.BaseUrls.Auth}{smartApiSettings.Endpoints.Token}");
+                client.BaseAddress = new Uri($"{smartApiSettings!.Endpoints.BaseUrls.Auth}{smartApiSettings.Endpoints.Token}");
                 // Configure other HttpClient settings as needed
             });
 
             services.AddHttpClient<MarketDataClient>(client =>
             {
-                client.BaseAddress = new Uri(smartApiSettings.Endpoints.BaseUrls.API);
+                client.BaseAddress = new Uri(smartApiSettings!.Endpoints.BaseUrls.API);
                 // Configure other HttpClient settings as needed
             });
 
             services.AddHttpClient<HistoricalDataClient>(client =>
             {
-                client.BaseAddress = new Uri(smartApiSettings.Endpoints.BaseUrls.API);
+                client.BaseAddress = new Uri(smartApiSettings!.Endpoints.BaseUrls.API);
                 // Configure other HttpClient settings as needed
             });
 
-            services.AddSingleton(smartApiSettings);
+            services.AddSingleton(smartApiSettings!);
 
             // Register other services or dependencies needed by Clients
             services.TryAddSingleton(_ => configuration);
             services.TryAddSingleton<TokenManager>();
+            services.TryAddScoped<IWebSocketV2, WebSocketV2>();
 
             return services;
         }
