@@ -23,17 +23,17 @@ namespace AngelOne.SmartApi.Clients
         private readonly IConfiguration _configuration;
         private readonly SmartApiSettings _smartApiSettings;
         private readonly TokenManager _tokenManager;
-        private readonly AngelOneLoginClient _angelOneloginClient;
+        private readonly AngelOneAuthClient _angelOneAuthClient;
         public AngelOneTokenClient(IConfiguration configuration, 
             HttpClient httpClient,
             TokenManager tokenManager,
-            AngelOneLoginClient angelOneLoginClient
+            AngelOneAuthClient angelOneAuthClient
             )
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _configuration = configuration;
             _tokenManager = tokenManager;
-            _angelOneloginClient = angelOneLoginClient;
+            _angelOneAuthClient = angelOneAuthClient;
             _smartApiSettings = _configuration.GetSection("SmartApi").Get<SmartApiSettings>();
         }
 
@@ -67,7 +67,7 @@ namespace AngelOne.SmartApi.Clients
 
 
                 //Ensure Login Session is valid
-                var IsLoginValid = await _angelOneloginClient.EnsureSession(IsHistorical);
+                var IsLoginValid = await _angelOneAuthClient.EnsureSession(IsHistorical);
                 if(!IsLoginValid)
                 {
                     return false;

@@ -14,14 +14,14 @@ using System.Text.Json.Serialization;
 
 namespace AngelOne.SmartApi.Clients
 {
-    public class AngelOneLoginClient
+    public class AngelOneAuthClient
     {
 
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
         private readonly SmartApiSettings _smartApiSettings;
         private readonly TokenManager _tokenManager;
-        public AngelOneLoginClient(IConfiguration configuration, 
+        public AngelOneAuthClient(IConfiguration configuration, 
             HttpClient httpClient,
             TokenManager tokenManager)
         {

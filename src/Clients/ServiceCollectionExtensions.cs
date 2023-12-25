@@ -23,7 +23,7 @@ namespace AngelOne.SmartApi.Clients
             }
             var smartApiSettings = configuration.GetSection("SmartApi").Get<SmartApiSettings>();
 
-            services.AddHttpClient<AngelOneLoginClient>(client =>
+            services.AddHttpClient<AngelOneAuthClient>(client =>
             {
                 client.BaseAddress = new Uri($"{smartApiSettings.Endpoints.BaseUrls.Auth}{smartApiSettings.Endpoints.Login}");
                 // Configure other HttpClient settings as needed
@@ -49,7 +49,7 @@ namespace AngelOne.SmartApi.Clients
 
             services.AddSingleton(smartApiSettings);
 
-            // Register other services or dependencies needed by AngelOneLoginClient
+            // Register other services or dependencies needed by Clients
             services.TryAddSingleton(_ => configuration);
             services.TryAddSingleton<TokenManager>();
 
