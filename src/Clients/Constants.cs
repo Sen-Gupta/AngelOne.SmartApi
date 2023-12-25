@@ -50,20 +50,33 @@ namespace AngelOne.SmartApi.Clients
         }
         public static class Endpoints
         {
-            public static string Login = "user/v1/loginByPassword";
-            public static string Token = "jwt/v1/generateTokens";
-            public static string Quote = "market/v1/quote/";
-            public static string Candle = "historical/v1/getCandleData";
-            public static string Profile = "user/v1/getProfile";
-            public static string Logout = "user/v1/logout";
-            public static string RMSLimit = "user/v1/getRMS";
+            public const string Login = "user/v1/loginByPassword";
+            public const string Token = "jwt/v1/generateTokens";
+            public const string Quote = "market/v1/quote/";
+            public const string Candle = "historical/v1/getCandleData";
+            public const string Profile = "user/v1/getProfile";
+            public const string Logout = "user/v1/logout";
+            public const string RMSLimit = "user/v1/getRMS";
 
             public static class BaseUrls
             {
-                public static string Auth = "https://apiconnect.angelbroking.com/rest/auth/angelbroking/";
-                public static string API = "https://apiconnect.angelbroking.com/rest/secure/angelbroking/";
+                public const string Auth = "https://apiconnect.angelbroking.com/rest/auth/angelbroking/";
+                public const string API = "https://apiconnect.angelbroking.com/rest/secure/angelbroking/";
             }
 
+        }
+
+        public static class Modes
+        {
+            public const string LTP = "LTP";
+            public const string OHLC = "OHLC";
+            public const string FULL = "FULL";
+        }
+
+        public static class Exchanges
+        {
+            public const string NSE = "NSE";
+            public const string BSE = "BSE";
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using AngelOne.SmartApi.Clients;
-using AngelOne.SmartApi.Clients.Enums;
 using AngelOne.SmartApi.Clients.Requests;
 using AngelOne.SmartApi.Clients.Settings;
 
@@ -33,7 +32,7 @@ namespace AngelOne.SmartApi.Client.Sample
 
             //Quotes
             var quoteRequest = new QuoteRequest();
-            quoteRequest.Mode = Modes.FULL.ToString();
+            quoteRequest.Mode = Constants.Modes.FULL;
             quoteRequest.ExchangeNameTokens.Add("NSE", new List<string> { "3045"});
 
             //var quoteResult = await marketDataClient.GetQuotes(quoteRequest);
@@ -42,7 +41,7 @@ namespace AngelOne.SmartApi.Client.Sample
             //Candle Request
             var candleRequest = new CandleRequest();
             candleRequest.SymbolToken = "3045";
-            candleRequest.Exchange = Exchanges.NSE.ToString();
+            candleRequest.Exchange = Constants.Exchanges.NSE;
             candleRequest.Interval = Constants.CANDLE_INTERVAL.ONE_DAY;
             candleRequest.FromDate = DateTime.Now.Date.AddDays(-7).ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
             candleRequest.ToDate = DateTime.Now.Date.AddDays(-2).ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
