@@ -19,6 +19,7 @@ namespace AngelOne.SmartApi.Clients.Settings
         public string Token { get; set; }
         public string Quote { get; set; }
         public string Candle { get; set; }
-        public string Profile { get; set; } 
+        public string Profile { get; set; }
+        public string RMSLimit { get; set; }
     }
 }

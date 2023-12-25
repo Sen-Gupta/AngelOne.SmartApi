@@ -28,23 +28,16 @@ namespace AngelOne.SmartApi.Client.Sample
             
 
             // Login
-            var profile = await marketDataClient.GetProfile();   
-            Console.WriteLine($"Profile: {profile?.Name}");
+            //var profile = await marketDataClient.GetProfile();   
+            //Console.WriteLine($"Profile: {profile?.Name}");
 
             //Quotes
             var quoteRequest = new QuoteRequest();
             quoteRequest.Mode = Modes.FULL.ToString();
             quoteRequest.ExchangeNameTokens.Add("NSE", new List<string> { "3045"});
 
-            var quoteResult = await marketDataClient.GetQuotes(quoteRequest);
-            if(quoteResult.HasFailedQuotes)
-            {
-                Console.WriteLine($"Failed Quotes: {quoteResult.FailedQuotes.Count}");
-            }
-            else
-            {
-                Console.WriteLine($"Quotes: {quoteResult.Quotes.Count}");
-            }
+            //var quoteResult = await marketDataClient.GetQuotes(quoteRequest);
+            
             
             //Candle Request
             var candleRequest = new CandleRequest();
@@ -54,7 +47,11 @@ namespace AngelOne.SmartApi.Client.Sample
             candleRequest.FromDate = DateTime.Now.Date.AddDays(-7).ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
             candleRequest.ToDate = DateTime.Now.Date.AddDays(-2).ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
             
-            var candleResponse = await marketDataClient.GetCandle(candleRequest);
+            //var candleResponse = await marketDataClient.GetCandle(candleRequest);
+
+            //RMS Limit
+            var rmsLimit = await marketDataClient.GetRMSLimit();
+
 
             //Logout
             var result = await authClient.Logout();

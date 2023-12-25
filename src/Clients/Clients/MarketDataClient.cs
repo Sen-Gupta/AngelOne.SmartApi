@@ -230,5 +230,70 @@ namespace AngelOne.SmartApi.Clients
 
             return null;
         }
+
+
+
+        #region RMS Limt
+
+        public async Task<RMSResult> GetRMSLimit()
+        {
+            RMSResult rmsResult = new RMSResult();
+            try
+            {
+                System.Console.WriteLine($"Making RMS Request at {_httpClient.BaseAddress}{_smartApiSettings.Endpoints.Quote}.");
+
+                //We need the API Key to make the request
+                var apiKey = _smartApiSettings?.GetAPIKey();
+                if (string.IsNullOrEmpty(apiKey))
+                {
+                    System.Console.WriteLine("API Key is null or empty. Please check your appsettings.json file.");
+                    return null;
+                }
+
+                //Ensure Token is valid
+                var IsSessionValid = await _angelOneTokenClient.EnsureSession();
+                if (!IsSessionValid)
+                {
+                    return null;
+                }
+
+                var apiToken = _tokenManager.GetAPIToken();
+
+                await RequestUtility.ApplyHeaders(_httpClient, apiKey, apiToken.JwtToken);
+
+                var response = await _httpClient.GetAsync(_smartApiSettings.Endpoints.RMSLimit);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var rmsResponse = await ResponseUtility.ParseResponse<RMSLimitResponse>(response);
+
+                    if (rmsResponse != null &&
+                        rmsResponse.Status &&
+                        rmsResponse.Message.ToLower() == "success" &&
+                        string.IsNullOrEmpty(rmsResponse.ErrorCode))
+                    {
+                        return rmsResponse.Data;
+                    }
+                    else
+                    {
+                        // Login response indicates failure
+                        ResponseUtility.HandleLoginFailure(rmsResponse);
+                    }
+                }
+                else
+                {
+                    // HTTP request to login endpoint failed
+                    ResponseUtility.HandleHttpRequestFailure(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle unexpected exceptions
+                ResponseUtility.HandleUnexpectedException(ex);
+            }
+
+            return rmsResult;
+        }
+        #endregion
     }
 }
