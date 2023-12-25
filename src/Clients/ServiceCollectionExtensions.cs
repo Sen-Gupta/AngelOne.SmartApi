@@ -27,25 +27,25 @@ namespace AngelOne.SmartApi.Clients
 
             services.AddHttpClient<AngelOneAuthClient>(client =>
             {
-                client.BaseAddress = new Uri($"{smartApiSettings!.Endpoints.BaseUrls.Auth}{smartApiSettings.Endpoints.Login}");
+                client.BaseAddress = new Uri($"{Constants.Endpoints.BaseUrls.Auth}{Constants.Endpoints.Login}");
                 // Configure other HttpClient settings as needed
             });
 
             services.AddHttpClient<AngelOneTokenClient>(client =>
             {
-                client.BaseAddress = new Uri($"{smartApiSettings!.Endpoints.BaseUrls.Auth}{smartApiSettings.Endpoints.Token}");
+                client.BaseAddress = new Uri($"{Constants.Endpoints.BaseUrls.Auth}{Constants.Endpoints.Token}");
                 // Configure other HttpClient settings as needed
             });
 
             services.AddHttpClient<MarketDataClient>(client =>
             {
-                client.BaseAddress = new Uri(smartApiSettings!.Endpoints.BaseUrls.API);
+                client.BaseAddress = new Uri(Constants.Endpoints.BaseUrls.API);
                 // Configure other HttpClient settings as needed
             });
 
             services.AddHttpClient<HistoricalDataClient>(client =>
             {
-                client.BaseAddress = new Uri(smartApiSettings!.Endpoints.BaseUrls.API);
+                client.BaseAddress = new Uri(Constants.Endpoints.BaseUrls.API);
                 // Configure other HttpClient settings as needed
             });
 

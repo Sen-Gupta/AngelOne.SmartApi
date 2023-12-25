@@ -44,7 +44,7 @@ namespace AngelOne.SmartApi.Clients
         {
             try
             {
-                System.Console.WriteLine($"Making Candle Request at {_httpClient.BaseAddress}{_smartApiSettings.Endpoints.Candle}.");
+                System.Console.WriteLine($"Making Candle Request at {_httpClient.BaseAddress}{Constants.Endpoints.Candle}.");
                 var candleRequestJson = JsonSerializer.Serialize(candleRequest);
                 System.Console.WriteLine($"Posted Data: {candleRequestJson}");
 
@@ -67,7 +67,7 @@ namespace AngelOne.SmartApi.Clients
 
                 await RequestUtility.ApplyHeaders(_httpClient, apiKey, apiToken.JwtToken);
 
-                var response = await _httpClient.PostAsJsonAsync(_smartApiSettings.Endpoints.Candle, candleRequest);
+                var response = await _httpClient.PostAsJsonAsync(Constants.Endpoints.Candle, candleRequest);
 
                 if (response.IsSuccessStatusCode)
                 {

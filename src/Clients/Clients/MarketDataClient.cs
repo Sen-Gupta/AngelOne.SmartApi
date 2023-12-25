@@ -63,7 +63,7 @@ namespace AngelOne.SmartApi.Clients
 
                 await RequestUtility.ApplyHeaders(_httpClient, apiKey, apiToken.JwtToken);
 
-                var response = await _httpClient.GetAsync(_smartApiSettings.Endpoints.Profile);
+                var response = await _httpClient.GetAsync(Constants.Endpoints.Profile);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -107,7 +107,7 @@ namespace AngelOne.SmartApi.Clients
             QuoteResult quotes = new QuoteResult();
             try
             {
-                System.Console.WriteLine($"Making Quotes Request at {_httpClient.BaseAddress}{_smartApiSettings.Endpoints.Quote}.");
+                System.Console.WriteLine($"Making Quotes Request at {_httpClient.BaseAddress}{Constants.Endpoints.Quote}.");
                 var quoteRequestJson = JsonSerializer.Serialize(quoteRequest);
                 System.Console.WriteLine($"Posted Data: {quoteRequestJson}");
 
@@ -130,7 +130,7 @@ namespace AngelOne.SmartApi.Clients
 
                 await RequestUtility.ApplyHeaders(_httpClient, apiKey, apiToken.JwtToken);
 
-                var response = await _httpClient.PostAsJsonAsync(_smartApiSettings.Endpoints.Quote, quoteRequest);
+                var response = await _httpClient.PostAsJsonAsync(Constants.Endpoints.Quote, quoteRequest);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -174,7 +174,7 @@ namespace AngelOne.SmartApi.Clients
         {
             try
             {
-                System.Console.WriteLine($"Making Candle Request at {_httpClient.BaseAddress}{_smartApiSettings.Endpoints.Candle}.");
+                System.Console.WriteLine($"Making Candle Request at {_httpClient.BaseAddress}{Constants.Endpoints.Candle}.");
                 var candleRequestJson = JsonSerializer.Serialize(candleRequest);
                 System.Console.WriteLine($"Posted Data: {candleRequestJson}");
 
@@ -197,7 +197,7 @@ namespace AngelOne.SmartApi.Clients
 
                 await RequestUtility.ApplyHeaders(_httpClient, apiKey, apiToken.JwtToken);
 
-                var response = await _httpClient.PostAsJsonAsync(_smartApiSettings.Endpoints.Candle, candleRequest);
+                var response = await _httpClient.PostAsJsonAsync(Constants.Endpoints.Candle, candleRequest);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -240,7 +240,7 @@ namespace AngelOne.SmartApi.Clients
             RMSResult rmsResult = new RMSResult();
             try
             {
-                System.Console.WriteLine($"Making RMS Request at {_httpClient.BaseAddress}{_smartApiSettings.Endpoints.Quote}.");
+                System.Console.WriteLine($"Making RMS Request at {_httpClient.BaseAddress}{Constants.Endpoints.RMSLimit}.");
 
                 //We need the API Key to make the request
                 var apiKey = _smartApiSettings?.GetAPIKey();
@@ -261,7 +261,7 @@ namespace AngelOne.SmartApi.Clients
 
                 await RequestUtility.ApplyHeaders(_httpClient, apiKey, apiToken.JwtToken);
 
-                var response = await _httpClient.GetAsync(_smartApiSettings.Endpoints.RMSLimit);
+                var response = await _httpClient.GetAsync(Constants.Endpoints.RMSLimit);
 
                 if (response.IsSuccessStatusCode)
                 {

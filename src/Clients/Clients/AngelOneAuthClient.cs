@@ -99,7 +99,7 @@ namespace AngelOne.SmartApi.Clients
         public async Task<bool> Logout()
         {
             HttpClient logOutClient = new HttpClient();
-            logOutClient.BaseAddress = new Uri(_smartApiSettings.Endpoints.BaseUrls.API);
+            logOutClient.BaseAddress = new Uri(Constants.Endpoints.BaseUrls.API);
             try
             {
                 //We need the API Key to make the request
@@ -114,7 +114,7 @@ namespace AngelOne.SmartApi.Clients
 
                 await RequestUtility.ApplyHeaders(logOutClient, apiKey, loginToken.JwtToken);
 
-                var response = await logOutClient.PostAsJsonAsync(_smartApiSettings.Endpoints.Logout, GetLogoutRequest());
+                var response = await logOutClient.PostAsJsonAsync(Constants.Endpoints.Logout, GetLogoutRequest());
 
                 if (response.IsSuccessStatusCode)
                 {
