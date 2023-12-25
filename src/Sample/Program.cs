@@ -19,8 +19,12 @@ namespace AngelOne.SmartApi.Client.Sample
            .AddSmartApiClients()  // Register services using AddSmartApi extension method
            .BuildServiceProvider();
 
+            // use Auth Client for explicit logout
+            var authClient = serviceProvider.GetRequiredService<AngelOneAuthClient>();
+            
             // Use GetRequiredService to ensure that the service is available
             var marketDataClient = serviceProvider.GetRequiredService<MarketDataClient>();
+
             
 
             // Login
@@ -51,7 +55,9 @@ namespace AngelOne.SmartApi.Client.Sample
             candleRequest.ToDate = DateTime.Now.Date.AddDays(-2).ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
             
             var candleResponse = await marketDataClient.GetCandle(candleRequest);
-            var candles = candleResponse?.GetCandle();
+
+            //Logout
+            var result = await authClient.Logout();
 
             return 0; // or another exit code if needed
         }

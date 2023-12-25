@@ -15,6 +15,7 @@ namespace AngelOne.SmartApi.Clients.Settings
         }
         public BaseUrlsSettings BaseUrls { get; set; }
         public string Login { get; set; }
+        public string Logout { get; set; }
         public string Token { get; set; }
         public string Quote { get; set; }
         public string Candle { get; set; }

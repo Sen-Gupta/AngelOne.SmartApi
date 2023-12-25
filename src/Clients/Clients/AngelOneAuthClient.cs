@@ -21,7 +21,7 @@ namespace AngelOne.SmartApi.Clients
         private readonly IConfiguration _configuration;
         private readonly SmartApiSettings _smartApiSettings;
         private readonly TokenManager _tokenManager;
-        public AngelOneAuthClient(IConfiguration configuration, 
+        public AngelOneAuthClient(IConfiguration configuration,
             HttpClient httpClient,
             TokenManager tokenManager)
         {
@@ -37,13 +37,13 @@ namespace AngelOne.SmartApi.Clients
             {
                 System.Console.WriteLine($"Making Login Request at {_httpClient.BaseAddress}.");
                 var apiKey = _smartApiSettings?.GetAPIKey(IsHistorical);
-                                
-                if(string.IsNullOrEmpty(apiKey))
+
+                if (string.IsNullOrEmpty(apiKey))
                 {
                     System.Console.WriteLine("API Key is null or empty. Please check your appsettings.json file.");
                     return false;
                 }
-                
+
                 await RequestUtility.ApplyHeaders(_httpClient, apiKey, string.Empty);
 
                 var response = await _httpClient.PostAsJsonAsync("", GetLoginRequest());
@@ -85,7 +85,7 @@ namespace AngelOne.SmartApi.Clients
         public async Task<bool> EnsureSession(bool IsHistorical = false)
         {
             var IsLoginValid = _tokenManager.IsLoginValid(IsHistorical);
-            if(IsLoginValid)
+            if (IsLoginValid)
             {
                 return true;
             }
@@ -93,6 +93,58 @@ namespace AngelOne.SmartApi.Clients
             {
                 return await Login(IsHistorical);
             }
+        }
+
+
+        public async Task<bool> Logout()
+        {
+            HttpClient logOutClient = new HttpClient();
+            logOutClient.BaseAddress = new Uri(_smartApiSettings.Endpoints.BaseUrls.API);
+            try
+            {
+                //We need the API Key to make the request
+                var apiKey = _smartApiSettings?.GetAPIKey();
+                if (string.IsNullOrEmpty(apiKey))
+                {
+                    System.Console.WriteLine("API Key is null or empty. Please check your appsettings.json file.");
+                    return false;
+                }
+
+                var loginToken = _tokenManager.GetAPIToken();
+
+                await RequestUtility.ApplyHeaders(logOutClient, apiKey, loginToken.JwtToken);
+
+                var response = await logOutClient.PostAsJsonAsync(_smartApiSettings.Endpoints.Logout, GetLogoutRequest());
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var logoutResponse = await ResponseUtility.ParseResponse<LogoutResponse>(response);
+
+                    if (logoutResponse != null &&
+                        logoutResponse.Status &&
+                        logoutResponse.Message.ToLower() == "success" &&
+                        string.IsNullOrEmpty(logoutResponse.ErrorCode))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        // Login response indicates failure
+                        ResponseUtility.HandleLoginFailure(logoutResponse);
+                    }
+                }
+                else
+                {
+                    // HTTP request to login endpoint failed
+                    ResponseUtility.HandleHttpRequestFailure(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle unexpected exceptions
+                ResponseUtility.HandleUnexpectedException(ex);
+            }
+            return false;
         }
 
         private LoginRequest GetLoginRequest()
@@ -103,5 +155,13 @@ namespace AngelOne.SmartApi.Clients
             loginRequest.TOTP = new Totp(Base32Encoding.ToBytes(_smartApiSettings.Credentials.TOTPCode)).ComputeTotp();
             return loginRequest;
         }
+
+        private LoginRequest GetLogoutRequest()
+        {
+            LoginRequest logoutRequest = new LoginRequest();
+            logoutRequest.ClientCode = _smartApiSettings.Credentials.ClientCode;
+            return logoutRequest;
+        }
+
     }
 }
