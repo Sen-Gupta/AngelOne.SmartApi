@@ -1,6 +1,7 @@
 ﻿using AngelOne.SmartApi.Clients;
 using AngelOne.SmartApi.Clients.Requests;
 using AngelOne.SmartApi.Clients.Settings;
+using AngelOne.SmartApi.Clients.Sockets;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,7 +25,7 @@ namespace AngelOne.SmartApi.Client.Sample
             // Use GetRequiredService to ensure that the service is available
             var marketDataClient = serviceProvider.GetRequiredService<MarketDataClient>();
 
-            
+            var tickerService = serviceProvider.GetRequiredService<TickerService>();
 
             // Login
             //var profile = await marketDataClient.GetProfile();   
@@ -51,11 +52,26 @@ namespace AngelOne.SmartApi.Client.Sample
             //RMS Limit
             var rmsLimit = await marketDataClient.GetRMSLimit();
 
+            try
+            {
+                  await tickerService.Connect();     
+                  
+            }
+            catch(Exception ex)
+            {
+
+            }
+
+            // we need to keep running the program
+            while (true)
+            {
+                // do something
+            }
 
             //Logout
-            var result = await authClient.Logout();
+            //var result = await authClient.Logout();
 
-            return 0; // or another exit code if needed
+            //return 0; // or another exit code if needed
         }
     }
 }

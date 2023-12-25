@@ -329,7 +329,7 @@ namespace AngelOne.SmartApi.Clients.Sockets
         /// <summary>
         /// Tells whether ticker is connected to server not.
         /// </summary>
-        private bool IsConnected
+        public bool IsConnected
         {
             get { return _webSocketV2.IsSocketOpen(); }
         }
@@ -351,6 +351,7 @@ namespace AngelOne.SmartApi.Clients.Sockets
 
             timer.Elapsed += (sender, e) =>
             {
+                Console.WriteLine($"Sending ping at {DateTime.UtcNow.ToLongTimeString()}.");
                 if (IsConnected)
                 {
                     _webSocketV2.SendAsync(Constants.Sockets.PING);
