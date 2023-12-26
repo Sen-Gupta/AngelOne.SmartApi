@@ -29,17 +29,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Upload NuGet Package
-      uses: actions/upload-artifact@v3
-      with:
-        name: nuget-packages
-        path: '**/*.nupkg'
+    - name: Install NuGet CLI
+      run: |
+        dotnet tool install --global dotnet-nuget
 
-    - name: Publish NuGet Package
-      uses: nuget/publish@v1
-      with:
-        nuget-version: 'latest'
-        api-key: ${{ secrets.NUGET_API_KEY }}
-        source-url: https://api.nuget.org/v3/index.json
-      env:
-        DOTNET_ROOT: /usr/share/dotnet
+    - name: Push NuGet Package
+      run: |
+        dotnet nuget push ./src/Clients/bin/Release/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
