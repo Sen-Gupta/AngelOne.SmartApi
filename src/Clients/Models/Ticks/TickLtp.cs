@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace AngelOne.SmartApi.Clients.Models.Ticks
 {
-    public struct TickLtp
+    public class TickLtp
     {
-        public String mode { get; set; }
-        public UInt16 subscription_mode { get; set; }
-        public UInt16 exchange_type { get; set; }
-        public String token { get; set; }
-        public Int64 sequence_number { get; set; }
-        public Int64 ExchangeTimestam { get; set; }
-        public Double last_traded_price { get; set; }
+        public string Mode { get; set; }
+        public int SubscriptionMode { get; set; }
+        public int ExchangeType { get; set; }
+        public string Token { get; set; }
+        public long SequenceNumber { get; set; }
+        public long ExchangeTimestamp { get; set; }
+        public double LastTradedPrice { get; set; }
     }
 }

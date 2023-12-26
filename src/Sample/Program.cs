@@ -60,10 +60,18 @@ namespace AngelOne.SmartApi.Client.Sample
                 };
                 tickerService.OnTickLtp += (message) =>
                 {
-                    Console.WriteLine($"{DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")} received LTP message: {message.token}={message.last_traded_price}");
+                    Console.WriteLine($"{DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")} received LTP message: {message.Token}={message.LastTradedPrice}");
+                };
+                tickerService.OnTick += (message) =>
+                {
+                    Console.WriteLine($"{DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")} received LTP message: {message.Token}={message.TotalSellQuantity}");
+                };
+                tickerService.OnTickQuote += (message) =>
+                {
+                    Console.WriteLine($"{DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")} received LTP message: {message.Token}={message.VolTraded}");
                 };
                 var subscribeRequest = new SubscribeRequest();
-                subscribeRequest.Tokens.Mode = Constants.TickerModes.Codes[Constants.TickerModes.LTP];
+                subscribeRequest.Tokens.Mode = Constants.TickerModes.Codes[Constants.TickerModes.FULL];
                 subscribeRequest.Tokens.TokenList.Add(new Token { ExchangeType = Constants.Exchanges.Codes[Constants.Exchanges.NSE], Tokens = new List<string> { "3045", "11460" } });
                 tickerService.Subscribe(subscribeRequest);
             }
@@ -72,7 +80,7 @@ namespace AngelOne.SmartApi.Client.Sample
 
             }
 
-            // we need to keep running the program
+            // we need to keep running the progr
             while (true)
             {
                 // do something

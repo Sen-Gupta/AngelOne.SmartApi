@@ -235,7 +235,10 @@ namespace AngelOne.SmartApi.Clients.Sockets
                 {
                     Tick tick = new Tick();
                     tick = ReadFull(Data);
-                    OnTick(tick);
+                    if(OnTick != null)
+                    {
+                        OnTick(tick);
+                    }
                 }
             }
             else if (MessageType == Convert.ToString(WebSocketMessageType.Text))
@@ -262,21 +265,21 @@ namespace AngelOne.SmartApi.Clients.Sockets
         private TickLtp ReadLTP(byte[] response)
         {
             TickLtp tickltp = new TickLtp();
-            tickltp.mode = Constants.TickerModes.LTP;
+            tickltp.Mode = Constants.TickerModes.LTP;
             int SubscriptionMode = response[0];
-            tickltp.subscription_mode = Convert.ToUInt16(SubscriptionMode);
+            tickltp.SubscriptionMode = Convert.ToUInt16(SubscriptionMode);
             int ExchangeType = response[1];
-            tickltp.exchange_type = Convert.ToUInt16(ExchangeType);
+            tickltp.ExchangeType = Convert.ToUInt16(ExchangeType);
             var token = Encoding.UTF8.GetString(response.Skip(2).Take(25).ToArray());
             string[] parts = token.Split('\u0000');
-            tickltp.token = parts[0];
-            tickltp.sequence_number = BitConverter.ToInt64(response.Skip(27).Take(8).ToArray(), 0);
+            tickltp.Token = parts[0];
+            tickltp.SequenceNumber = BitConverter.ToInt64(response.Skip(27).Take(8).ToArray(), 0);
             //DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             //TimeZoneInfo istZone = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
             var epocSeconds = BitConverter.ToInt64(response.Skip(35).Take(8).ToArray(), 0);
-            tickltp.ExchangeTimestam = epocSeconds;
+            tickltp.ExchangeTimestamp = epocSeconds;
             var ltp = BitConverter.ToInt32(response.Skip(43).Take(8).ToArray(), 0);
-            tickltp.last_traded_price = ltp * 0.01;
+            tickltp.LastTradedPrice = ltp * 0.01;
             return tickltp;
         }
 
@@ -286,33 +289,33 @@ namespace AngelOne.SmartApi.Clients.Sockets
         private TickQuote ReadQuote(byte[] response)
         {
             TickQuote tickquote = new TickQuote();
-            tickquote.mode = Constants.TickerModes.QUOTE;
+            tickquote.Mode = Constants.TickerModes.QUOTE;
             int SubscriptionMode = response[0];
-            tickquote.subscription_mode = Convert.ToUInt16(SubscriptionMode);
+            tickquote.SubscriptionMode = Convert.ToUInt16(SubscriptionMode);
             int exchangeType = response[1];
-            tickquote.exchange_type = response[1];
+            tickquote.ExchangeType = response[1];
             var token = Encoding.UTF8.GetString(response.Skip(2).Take(25).ToArray());
             string[] parts = token.Split('\u0000');
-            tickquote.token = parts[0];
-            tickquote.sequence_number = BitConverter.ToInt64(response.Skip(27).Take(8).ToArray(), 0);
+            tickquote.Token = parts[0];
+            tickquote.SequenceNumber = BitConverter.ToInt64(response.Skip(27).Take(8).ToArray(), 0);
             var exchangeTimeStampInMilliSeconds = BitConverter.ToInt64(response.Skip(35).Take(8).ToArray(), 0);
-            tickquote.ExchangeTimestam = exchangeTimeStampInMilliSeconds;
+            tickquote.ExchangeTimestamp = exchangeTimeStampInMilliSeconds;
             var ltp = BitConverter.ToInt64(response.Skip(43).Take(8).ToArray(), 0);
-            tickquote.last_traded_price = ltp;
-            tickquote.last_traded_quantity = BitConverter.ToInt64(response.Skip(51).Take(8).ToArray(), 0);
+            tickquote.LastTradedPrice = ltp;
+            tickquote.LastTradedQuantity = BitConverter.ToInt64(response.Skip(51).Take(8).ToArray(), 0);
             var averageTradedPrice = BitConverter.ToInt64(response.Skip(59).Take(8).ToArray(), 0);
-            tickquote.avg_traded_price = averageTradedPrice;
-            tickquote.vol_traded = BitConverter.ToInt64(response.Skip(67).Take(8).ToArray(), 0);
-            tickquote.total_buy_quantity = BitConverter.ToDouble(response.Skip(75).Take(8).ToArray(), 0);
-            tickquote.total_sell_quantity = BitConverter.ToDouble(response.Skip(83).Take(8).ToArray(), 0);
+            tickquote.AvgTradedPrice = averageTradedPrice;
+            tickquote.VolTraded = BitConverter.ToInt64(response.Skip(67).Take(8).ToArray(), 0);
+            tickquote.TotalBuyQuantity = BitConverter.ToDouble(response.Skip(75).Take(8).ToArray(), 0);
+            tickquote.TotalSellQuantity = BitConverter.ToDouble(response.Skip(83).Take(8).ToArray(), 0);
             var openPriceOfTheDay = BitConverter.ToInt64(response.Skip(91).Take(8).ToArray(), 0);
-            tickquote.open_price_day = openPriceOfTheDay;
+            tickquote.OpenPrice = openPriceOfTheDay;
             var highPriceOfTheDay = BitConverter.ToInt64(response.Skip(99).Take(8).ToArray(), 0);
-            tickquote.high_price_day = highPriceOfTheDay;
+            tickquote.HighPrice = highPriceOfTheDay;
             var lowPriceOfTheDay = BitConverter.ToInt64(response.Skip(107).Take(8).ToArray(), 0);
-            tickquote.low_price_day = lowPriceOfTheDay;
+            tickquote.LowPrice = lowPriceOfTheDay;
             var closePrice = BitConverter.ToInt64(response.Skip(115).Take(8).ToArray(), 0);
-            tickquote.close_price = closePrice;
+            tickquote.ClosePrice = closePrice;
             return tickquote;
 
         }
@@ -323,59 +326,59 @@ namespace AngelOne.SmartApi.Clients.Sockets
         private Tick ReadFull(byte[] response)
         {
             Tick tick = new Tick();
-            tick.mode = Constants.TickerModes.FULL;
+            tick.Mode = Constants.TickerModes.FULL;
             int SubscriptionMode = response[0];
-            tick.subscription_mode = Convert.ToUInt16(SubscriptionMode);
-            tick.exchange_type = response[1];
+            tick.SubscriptionMode = Convert.ToUInt16(SubscriptionMode);
+            tick.ExchangeType = response[1];
             var token = Encoding.UTF8.GetString(response.Skip(2).Take(25).ToArray());
             string[] parts = token.Split('\u0000');
-            tick.token = parts[0];
-            tick.sequence_number = BitConverter.ToInt64(response.Skip(27).Take(8).ToArray(), 0);
+            tick.Token = parts[0];
+            tick.SequenceNumber = BitConverter.ToInt64(response.Skip(27).Take(8).ToArray(), 0);
             var exchangeTimeStampInMilliSeconds = BitConverter.ToInt64(response.Skip(35).Take(8).ToArray(), 0);
-            tick.ExchangeTimestam = exchangeTimeStampInMilliSeconds;
+            tick.ExchangeTimestamp = exchangeTimeStampInMilliSeconds;
             var ltp = BitConverter.ToInt64(response.Skip(43).Take(8).ToArray(), 0);
-            tick.last_traded_price = ltp;
-            tick.last_traded_quantity = BitConverter.ToInt64(response.Skip(51).Take(8).ToArray(), 0);
+            tick.LastTradedPrice = ltp;
+            tick.LastTradedQuantity = BitConverter.ToInt64(response.Skip(51).Take(8).ToArray(), 0);
             var averageTradedPrice = BitConverter.ToInt64(response.Skip(59).Take(8).ToArray(), 0);
-            tick.avg_traded_price = averageTradedPrice;
-            tick.vol_traded = BitConverter.ToInt64(response.Skip(67).Take(8).ToArray(), 0);
-            tick.total_buy_quantity = BitConverter.ToDouble(response.Skip(75).Take(8).ToArray(), 0);
-            tick.total_sell_quantity = BitConverter.ToDouble(response.Skip(83).Take(8).ToArray(), 0);
+            tick.AvgTradedPrice = averageTradedPrice;
+            tick.VolTraded = BitConverter.ToInt64(response.Skip(67).Take(8).ToArray(), 0);
+            tick.TotalBuyQuantity = BitConverter.ToDouble(response.Skip(75).Take(8).ToArray(), 0);
+            tick.TotalSellQuantity = BitConverter.ToDouble(response.Skip(83).Take(8).ToArray(), 0);
             var openPriceOfTheDay = BitConverter.ToInt64(response.Skip(91).Take(8).ToArray(), 0);
-            tick.open_price_day = openPriceOfTheDay;
+            tick.OpenPrice = openPriceOfTheDay;
             var highPriceOfTheDay = BitConverter.ToInt64(response.Skip(99).Take(8).ToArray(), 0);
-            tick.high_price_day = highPriceOfTheDay;
+            tick.HighPrice = highPriceOfTheDay;
             var lowPriceOfTheDay = BitConverter.ToInt64(response.Skip(107).Take(8).ToArray(), 0);
-            tick.low_price_day = lowPriceOfTheDay;
+            tick.LowPrice = lowPriceOfTheDay;
             var closePrice = BitConverter.ToInt64(response.Skip(115).Take(8).ToArray(), 0);
-            tick.close_price = closePrice;
+            tick.ClosePrice = closePrice;
             var epoch1 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             var lastTradedTimestampInSeconds = BitConverter.ToInt64(response.Skip(123).Take(8).ToArray(), 0);
-            tick.last_traded_timestamp = lastTradedTimestampInSeconds;
-            tick.open_interest = BitConverter.ToInt64(response.Skip(131).Take(8).ToArray(), 0);
+            tick.LastTradedTimestamp = lastTradedTimestampInSeconds;
+            tick.OpenInterest = BitConverter.ToInt64(response.Skip(131).Take(8).ToArray(), 0);
             byte[] best5Bytes = response.Skip(147).Take(200).ToArray();
-            tick.bestfivedata = new BestFiveItem[10];
+            tick.Best5 = new BestFiveItem[10];
             for (int i = 0; i < 10; i++)
             {
                 var bestData = best5Bytes.Skip(i * 20).Take(20).ToArray();
-                tick.bestfivedata[i].buy_sell_flag = BitConverter.ToInt16(bestData.Skip(0).Take(2).ToArray(), 0);
+                tick.Best5[i].BuySellFlag = BitConverter.ToInt16(bestData.Skip(0).Take(2).ToArray(), 0);
 
-                tick.bestfivedata[i].quantity = BitConverter.ToInt64(bestData.Skip(2).Take(8).ToArray(), 0);
+                tick.Best5[i].Quantity = BitConverter.ToInt64(bestData.Skip(2).Take(8).ToArray(), 0);
 
                 var price = BitConverter.ToInt64(bestData.Skip(10).Take(8).ToArray(), 0);
-                tick.bestfivedata[i].price = price;
+                tick.Best5[i].Price = price;
 
-                tick.bestfivedata[i].orders = BitConverter.ToInt16(bestData.Skip(18).Take(2).ToArray(), 0);
+                tick.Best5[i].Orders = BitConverter.ToInt16(bestData.Skip(18).Take(2).ToArray(), 0);
             }
 
             var upperCircuitLimit = BitConverter.ToInt64(response.Skip(347).Take(8).ToArray(), 0);
-            tick.upper_circuit = upperCircuitLimit;
+            tick.UpperCircuit = upperCircuitLimit;
             var lowerCircuitLimit = BitConverter.ToInt64(response.Skip(355).Take(8).ToArray(), 0);
-            tick.lower_circuit = lowerCircuitLimit;
+            tick.LowerCircuit = lowerCircuitLimit;
             var fiftyTwoWeekHighPrice = BitConverter.ToInt64(response.Skip(363).Take(8).ToArray(), 0);
-            tick.fiftytwo_week_high = fiftyTwoWeekHighPrice;
+            tick.High52Week = fiftyTwoWeekHighPrice;
             var fiftyTwoWeekLowPrice = BitConverter.ToInt64(response.Skip(371).Take(8).ToArray(), 0);
-            tick.fiftytwo_week_low = fiftyTwoWeekLowPrice;
+            tick.Low52Week = fiftyTwoWeekLowPrice;
             return tick;
         }
 
@@ -386,7 +389,7 @@ namespace AngelOne.SmartApi.Clients.Sockets
         {
             TickPong tickp = new TickPong();
             var result_msg = Encoding.UTF8.GetString(response.Skip(0).Take(4).ToArray());
-            tickp.result = result_msg;
+            tickp.PingResult = result_msg;
             return tickp;
         }
 

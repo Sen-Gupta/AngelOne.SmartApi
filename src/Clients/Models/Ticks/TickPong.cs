@@ -8,6 +8,6 @@ namespace AngelOne.SmartApi.Clients.Models.Ticks
 {
     public struct TickPong
     {
-       public String result { get; set; }
+       public string PingResult { get; set; }
     }
 }
