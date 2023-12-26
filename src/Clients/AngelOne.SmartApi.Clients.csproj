@@ -22,4 +22,5 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="$(IdentityModelVersion)" />
   </ItemGroup>
 
+  <Import Project="$(NuGetPackageRoot)/Nerdbank.GitVersioning/tasks/Nerdbank.GitVersioning.targets" />
 </Project>
