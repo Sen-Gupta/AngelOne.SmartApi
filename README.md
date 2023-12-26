@@ -1,20 +1,19 @@
-#AngelOne SmartApi Client Library for .NET Core
+# AngelOne SmartApi Client Library for .NET Core
 
-##SmartApi Configuration
+## SmartApi Configuration
 
-This is a sample .Net Core implementation of the SmartApi. 
-It is a simple console application that demonstrates the usage of the SmartApi and WebSocket V2. 
-
-
-##Prerequisites
-Latest .Net Core SDK 8.0 or above
-Visual Studio 2022 Community or above
-VS Code Latest
+A client library demonstrating usage of the AngelOne SmartApi and WebSocket V2. 
 
 
-##Configuration
-The SmartApiConfiguration section in the appsettings.json includes essential credentials for authentication and authorization when interacting with the SmartApi.
+## Prerequisites
+    Latest .Net Core SDK 8.0 or above
+    Visual Studio 2022 Community or above
+    VS Code Latest
 
+
+## Configuration
+The SmartApiConfiguration section in the appsettings.json in the project AngelOne.SmartApi.Client.Sample.csproj includes essential credentials for authentication and authorization when interacting with the SmartApi.
+```
 "SmartApi": {
   "Credentials": {
     "ClientCode": "YourClientCode",
@@ -23,8 +22,9 @@ The SmartApiConfiguration section in the appsettings.json includes essential cre
     "APIKey": "YourAPIKey"
   }
 }
+```
 
-##Credentials
+## Credentials
 
 ClientCode: The client code is your Angel Broking account's Client ID.
 Example: "ClientCode": "DELL2023"
@@ -40,7 +40,6 @@ Note: You just need need to scan the QR code from your phone camera and it will 
 There is no need to use any kind of Authenticator app as we are going to use this with API.
 
 Example: "TOTPCode": "2EXXXJNXYERUCPLAATDRTUHSWM"
-
 
 
 APIKey: The API key is a secure token that serves as a unique identifier for API requests. It is used for authorization when accessing SmartApi services.
@@ -64,4 +63,3 @@ In Visual Studio 2022 Community or above choose AngelOne.SmartApi.Client.Sample.
 
 In VS Code choose AngelOne.SmartApi.Client.Sample.csproj and run the application. Using Command line dotnet run
 
-```
