@@ -12,7 +12,7 @@ using System.Text.Json;
 
 namespace AngelOne.SmartApi.Clients
 {
-    public class MarketDataClient
+    public class SmartApiClient
     {
         private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient;
@@ -20,7 +20,7 @@ namespace AngelOne.SmartApi.Clients
         private readonly TokenManager _tokenManager;
         private readonly AngelOneTokenClient _angelOneTokenClient;
 
-        public MarketDataClient(IConfiguration configuration, 
+        public SmartApiClient(IConfiguration configuration, 
             HttpClient httpClient,
             TokenManager tokenManager,
             AngelOneTokenClient angelOneTokenClient
@@ -45,7 +45,7 @@ namespace AngelOne.SmartApi.Clients
                 System.Console.WriteLine($"Making Profile Request at {_httpClient.BaseAddress}.");
 
                 //We need the API Key to make the request
-                var apiKey = _smartApiSettings?.GetAPIKey();
+                var apiKey = _smartApiSettings?.Credentials.APIKey;
                 if (string.IsNullOrEmpty(apiKey))
                 {
                     System.Console.WriteLine("API Key is null or empty. Please check your appsettings.json file.");
@@ -112,7 +112,7 @@ namespace AngelOne.SmartApi.Clients
                 System.Console.WriteLine($"Posted Data: {quoteRequestJson}");
 
                 //We need the API Key to make the request
-                var apiKey = _smartApiSettings?.GetAPIKey();
+                var apiKey = _smartApiSettings?.Credentials.APIKey;
                 if (string.IsNullOrEmpty(apiKey))
                 {
                     System.Console.WriteLine("API Key is null or empty. Please check your appsettings.json file.");
@@ -179,7 +179,7 @@ namespace AngelOne.SmartApi.Clients
                 System.Console.WriteLine($"Posted Data: {candleRequestJson}");
 
                 //We need the API Key to make the request
-                var apiKey = _smartApiSettings?.GetAPIKey();
+                var apiKey = _smartApiSettings?.Credentials.APIKey;
                 if (string.IsNullOrEmpty(apiKey))
                 {
                     System.Console.WriteLine("API Key is null or empty. Please check your appsettings.json file.");
@@ -243,7 +243,7 @@ namespace AngelOne.SmartApi.Clients
                 System.Console.WriteLine($"Making RMS Request at {_httpClient.BaseAddress}{Constants.Endpoints.RMSLimit}.");
 
                 //We need the API Key to make the request
-                var apiKey = _smartApiSettings?.GetAPIKey();
+                var apiKey = _smartApiSettings?.Credentials.APIKey;
                 if (string.IsNullOrEmpty(apiKey))
                 {
                     System.Console.WriteLine("API Key is null or empty. Please check your appsettings.json file.");

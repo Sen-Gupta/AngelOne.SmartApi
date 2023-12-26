@@ -9,16 +9,5 @@ namespace AngelOne.SmartApi.Clients.Settings
     public class SmartApiSettings
     {
         public CredentialsSettings Credentials { get; set; }
-        public string GetAPIKey(bool IsHistorical = false)
-        {
-            if(IsHistorical)
-            {
-                return Credentials.HistoricalDataKey;
-            }
-            else
-            {
-                return Credentials.MarketDataKey;
-            }
-        }
     }
 }

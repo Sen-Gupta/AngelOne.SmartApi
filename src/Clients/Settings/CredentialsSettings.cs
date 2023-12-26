@@ -11,7 +11,6 @@ namespace AngelOne.SmartApi.Clients.Settings
         public string ClientCode { get; set; }
         public string ClientPIN { get; set; }
         public string TOTPCode { get; set; }
-        public string HistoricalDataKey { get; set; }
-        public string MarketDataKey { get; set; }
+        public string APIKey { get; set; }
     }
 }
