@@ -1,0 +1,45 @@
+name: Build and Publish NuGet Package
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '6.0.x'  # Adjust the version as needed
+
+    - name: Build
+      run: dotnet build -c Release src/Clients/AngelOne.SmartApi.Clients.csproj
+
+    - name: Pack
+      run: dotnet pack -c Release --no-build src/Clients/AngelOne.SmartApi.Clients.csproj
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Upload NuGet Package
+      uses: actions/upload-artifact@v2
+      with:
+        name: nuget-packages
+        path: '**/*.nupkg'
+
+    - name: Publish NuGet Package
+      uses: nuget/publish@v1
+      with:
+        nuget-version: 'latest'
+        api-key: ${{ secrets.NUGET_API_KEY }}
+        source-url: https://api.nuget.org/v3/index.json
+      env:
+        DOTNET_ROOT: /usr/share/dotnet
