@@ -34,8 +34,11 @@ jobs:
 
     - name: Install NuGet CLI
       run: |
-        dotnet tool install --global dotnet-nuget --version 0.10.6
+        dotnet tool install --global dotnet-nuget --version 4.2.4
         dotnet nuget locals all --clear
+
+    - name: Print NuGet Tool Version
+      run: dotnet nuget --version
 
     - name: Push NuGet Package
       run: |
