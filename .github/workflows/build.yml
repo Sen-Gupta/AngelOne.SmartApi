@@ -29,9 +29,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Clear NuGet Cache
+      run: dotnet nuget locals all --clear
+
     - name: Install NuGet CLI
       run: |
-        dotnet tool install --global dotnet-nuget
+        dotnet tool install --global dotnet-nuget --version 0.10.6
+        dotnet nuget locals all --clear
 
     - name: Push NuGet Package
       run: |
