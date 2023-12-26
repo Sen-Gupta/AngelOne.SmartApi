@@ -11,10 +11,10 @@ jobs:
 
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v
       with:
         dotnet-version: '8.0.x'  # Adjust the version as needed
 
@@ -30,7 +30,7 @@ jobs:
 
     steps:
     - name: Upload NuGet Package
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: nuget-packages
         path: '**/*.nupkg'
