@@ -39,4 +39,5 @@ jobs:
 
     - name: Push NuGet Package
       run: |
-        mono nuget.exe push ./src/Clients/bin/Release/AngelOne.SmartApi.Clients.1.0.0.nupkg -Source https://api.nuget.org/v3/index.json -ApiKey ${{ secrets.NUGET_API_KEY }}
+        mono nuget.exe push  /home/runner/work/AngelOne.SmartApi/AngelOne.SmartApi/src/Clients/bin/Release/AngelOne.SmartApi.Clients.1.0.0.nupkg -Source https://api.nuget.org/v3/index.json -ApiKey ${{ secrets.NUGET_API_KEY }}
+        
