@@ -21,7 +21,7 @@ namespace AngelOne.SmartApi.Client.Sample
             var authClient = serviceProvider.GetRequiredService<AngelOneAuthClient>();
 
             // Use GetRequiredService to ensure that the service is available
-            var marketDataClient = serviceProvider.GetRequiredService<MarketDataClient>();
+            var marketDataClient = serviceProvider.GetRequiredService<SmartApiClient>();
 
             var tickerService = serviceProvider.GetRequiredService<TickerService>();
 

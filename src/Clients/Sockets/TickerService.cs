@@ -148,7 +148,7 @@ namespace AngelOne.SmartApi.Clients.Sockets
                          new Dictionary<string, string>()
                          {
                              [Constants.Sockets.Headers.AUTHORIZATION] = token.JwtToken,
-                             [Constants.Sockets.Headers.APIKEY] = _smartApiSettings.GetAPIKey(),
+                             [Constants.Sockets.Headers.APIKEY] = _smartApiSettings.Credentials.APIKey,
                              [Constants.Sockets.Headers.CLIENTCODE] = _smartApiSettings.Credentials.ClientCode,
                              [Constants.Sockets.Headers.FEEDTOKEN] = token.FeedToken
                          }); 

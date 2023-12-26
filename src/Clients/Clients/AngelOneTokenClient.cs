@@ -58,7 +58,7 @@ namespace AngelOne.SmartApi.Clients
                 System.Console.WriteLine($"Making Token Request at {_httpClient.BaseAddress}.");
 
                 //We need the API Key to make the request
-                var apiKey = _smartApiSettings?.GetAPIKey(IsHistorical);    
+                var apiKey = _smartApiSettings?.Credentials.APIKey;    
                 if (string.IsNullOrEmpty(apiKey))
                 {
                     System.Console.WriteLine("API Key is null or empty. Please check your appsettings.json file.");

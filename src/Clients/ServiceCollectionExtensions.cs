@@ -37,13 +37,7 @@ namespace AngelOne.SmartApi.Clients
                 // Configure other HttpClient settings as needed
             });
 
-            services.AddHttpClient<MarketDataClient>(client =>
-            {
-                client.BaseAddress = new Uri(Constants.Endpoints.BaseUrls.API);
-                // Configure other HttpClient settings as needed
-            });
-
-            services.AddHttpClient<HistoricalDataClient>(client =>
+            services.AddHttpClient<SmartApiClient>(client =>
             {
                 client.BaseAddress = new Uri(Constants.Endpoints.BaseUrls.API);
                 // Configure other HttpClient settings as needed

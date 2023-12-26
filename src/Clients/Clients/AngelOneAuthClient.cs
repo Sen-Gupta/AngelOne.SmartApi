@@ -36,7 +36,7 @@ namespace AngelOne.SmartApi.Clients
             try
             {
                 System.Console.WriteLine($"Making Login Request at {_httpClient.BaseAddress}.");
-                var apiKey = _smartApiSettings?.GetAPIKey(IsHistorical);
+                var apiKey = _smartApiSettings?.Credentials.APIKey;
 
                 if (string.IsNullOrEmpty(apiKey))
                 {
@@ -103,7 +103,7 @@ namespace AngelOne.SmartApi.Clients
             try
             {
                 //We need the API Key to make the request
-                var apiKey = _smartApiSettings?.GetAPIKey();
+                var apiKey = _smartApiSettings?.Credentials.APIKey;
                 if (string.IsNullOrEmpty(apiKey))
                 {
                     System.Console.WriteLine("API Key is null or empty. Please check your appsettings.json file.");
