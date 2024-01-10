@@ -1,5 +1,8 @@
 # AngelOne SmartApi Client Library for .NET Core
 
+## Source Code:
+https://github.com/Sen-Gupta/AngelOne.SmartApi
+
 ## SmartApi Configuration
 
 A client library demonstrating usage of the AngelOne SmartApi and WebSocket V2. 
