@@ -17,6 +17,7 @@
   <PropertyGroup>
     <ProjectUrl>https://github.com/Sen-Gupta/AngelOne.SmartApi</ProjectUrl>
     <LicenseUrl>https://opensource.org/licenses/MIT</LicenseUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -26,6 +27,12 @@
     <PackageReleaseNotes>Refer readme.txt</PackageReleaseNotes>
   </PropertyGroup>
 
+  <ItemGroup>
+    
+    <None Include="README.md" Pack="true" PackagePath="\"/>
+   
+  </ItemGroup>
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="$(AspNetCoreVersion)" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="$(AspNetCoreVersion)" />
