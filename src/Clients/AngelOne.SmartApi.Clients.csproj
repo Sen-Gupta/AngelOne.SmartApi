@@ -8,7 +8,7 @@
 
   <PropertyGroup>
     <PackageId>AngleOne.SmartApi.Clients</PackageId>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
     <Title>AngleOne.SmartApi.Client</Title>
     <Authors>Sen Gupta</Authors>
     <Description>.Net Core based modern clients for consumingg AngelOne APIs</Description>
@@ -25,6 +25,8 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>AngelOne, SmartAPI, WebSocket 2.0</PackageTags>
     <PackageReleaseNotes>Refer readme.txt</PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/Sen-Gupta/AngelOne.SmartApi.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
