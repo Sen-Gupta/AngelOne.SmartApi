@@ -15,10 +15,14 @@
     <MicrosoftAspNetCoreOwin>$(AspNetCoreVersion)</MicrosoftAspNetCoreOwin>
   </PropertyGroup>
   
+   <PropertyGroup>
+    <MicrosoftAspNetExtensions>8.0.1</MicrosoftAspNetExtensions>
+  </PropertyGroup>
+  
   
   <!-- 'Microsoft.EntityFrameWork' packages that are not included in the ASP.NET Core shared framework -->
   <PropertyGroup>
-    <IdentityModelVersion>7.0.3</IdentityModelVersion>
+    <IdentityModelVersion>7.1.2</IdentityModelVersion>
   </PropertyGroup>
 
   <!-- 'Microsoft.Extensions' packages that are not included in the ASP.NET Core shared framework -->

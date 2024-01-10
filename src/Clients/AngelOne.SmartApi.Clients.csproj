@@ -3,8 +3,27 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Version>1.0.1</Version>
     <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>AngleOne.SmartApi.Clients</PackageId>
+    <Version>1.0.2</Version>
+    <Title>AngleOne.SmartApi.Client</Title>
+    <Authors>Sen Gupta</Authors>
+    <Description>.Net Core based modern clients for consumingg AngelOne APIs</Description>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ProjectUrl>https://github.com/Sen-Gupta/AngelOne.SmartApi</ProjectUrl>
+    <LicenseUrl>https://opensource.org/licenses/MIT</LicenseUrl>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageSourceUrl>https://github.com/Sen-Gupta/AngelOne.SmartApi</PackageSourceUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>AngelOne, SmartAPI, WebSocket 2.0</PackageTags>
+    <PackageReleaseNotes>Refer readme.txt</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,11 +31,9 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="$(AspNetCoreVersion)" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(AspNetCoreVersion)" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="$(AspNetCoreVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="$(AspNetCoreVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="$(MicrosoftAspNetExtensions)" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="$(IdentityModelVersion)" />
     <PackageReference Include="Otp.NET" Version="$(OTPNetVersion)" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="$(IdentityModelVersion)" />
   </ItemGroup>
-
-  
 </Project>
