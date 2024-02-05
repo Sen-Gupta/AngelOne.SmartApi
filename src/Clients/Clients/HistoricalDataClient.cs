@@ -49,7 +49,7 @@ namespace AngelOne.SmartApi.Clients
                 System.Console.WriteLine($"Posted Data: {candleRequestJson}");
 
                 //We need the API Key to make the request
-                var apiKey = _smartApiSettings?.GetAPIKey();
+                var apiKey = _smartApiSettings?.Credentials.APIKey;
                 if (string.IsNullOrEmpty(apiKey))
                 {
                     System.Console.WriteLine("API Key is null or empty. Please check your appsettings.json file.");

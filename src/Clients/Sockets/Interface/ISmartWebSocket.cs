@@ -12,7 +12,7 @@ namespace AngelOne.SmartApi.Clients.Sockets.Interface
         event Closed OnClose;
         event DataReceived OnDataReceived;
         event Error OnError;
-        Task ConnectAsync(string Url, Dictionary<string, string> headers = null);
+        Task ConnectAsync(string Url, Dictionary<string, string> headers = null!);
         Task SendAsync(string Message);
         Task ReceiveAsync();
         bool IsSocketOpen();

@@ -13,10 +13,10 @@ namespace AngelOne.SmartApi.Clients.Sockets
         private SemaphoreSlim _lockObject = new SemaphoreSlim(1, 1);
 
 
-        public event Connected OnConnect;
-        public event Closed OnClose;
-        public event DataReceived OnDataReceived;
-        public event Error OnError;
+        public event Connected OnConnect = null!;
+        public event Closed OnClose = null!;
+        public event DataReceived OnDataReceived = null!;
+        public event Error OnError = null!;
 
         public bool IsSocketOpen()
         {
@@ -26,7 +26,7 @@ namespace AngelOne.SmartApi.Clients.Sockets
             return _clientWebSocket.State == WebSocketState.Open;
         }
 
-        public async Task ConnectAsync(string Url, Dictionary<string, string> headers = null)
+        public async Task ConnectAsync(string Url, Dictionary<string, string> headers = null!)
         {
             try
             {

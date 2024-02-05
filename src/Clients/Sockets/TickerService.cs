@@ -16,9 +16,9 @@ namespace AngelOne.SmartApi.Clients.Sockets
     public class TickerService
     {
         #region Private Variables
-        System.Timers.Timer timer;
+        System.Timers.Timer timer = null!;
         private bool isTimerRunning = false;
-        public Timer pingTimer;
+        public Timer pingTimer = null!;
         
         bool RESUBSCRIBE_FLAG = true;
 
@@ -34,12 +34,12 @@ namespace AngelOne.SmartApi.Clients.Sockets
         public delegate void OnErrored(string Message);
         
         public event OnConnected OnConnect;
-        public event OnClosed OnClose;
-        public event OnTickReceived OnTick;
-        public event OnTickLtpReceived OnTickLtp;
-        public event OnTickQuoteReceived OnTickQuote;
-        public event OnTickPongReceived OnTickPong;
-        public event OnErrored OnError;
+        public event OnClosed OnClose = null!;
+        public event OnTickReceived OnTick = null!;
+        public event OnTickLtpReceived OnTickLtp = null!;
+        public event OnTickQuoteReceived OnTickQuote = null!;
+        public event OnTickPongReceived OnTickPong = null!;
+        public event OnErrored OnError = null!;
 
         #endregion
 
@@ -59,7 +59,7 @@ namespace AngelOne.SmartApi.Clients.Sockets
             _webSocketV2 = webSocketV2;
             _configuration = configuration;
             _tokenManager = tokenManager;
-            _smartApiSettings = _configuration.GetSection("SmartApi").Get<SmartApiSettings>();
+            _smartApiSettings = _configuration.GetSection("SmartApi").Get<SmartApiSettings>()!;
             _webSocketV2.OnConnect += ConnectedHandler;
             _webSocketV2.OnClose += CloseHandler;
             _webSocketV2.OnError += ErrorHandler;
