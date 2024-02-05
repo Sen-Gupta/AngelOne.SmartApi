@@ -19,8 +19,8 @@ namespace AngelOne.SmartApi.Clients.Sockets
         System.Timers.Timer timer = null!;
         private bool isTimerRunning = false;
         public Timer pingTimer = null!;
-        
-        bool RESUBSCRIBE_FLAG = true;
+
+        bool RESUBSCRIBE_FLAG;
 
         #endregion
 
@@ -32,8 +32,8 @@ namespace AngelOne.SmartApi.Clients.Sockets
         public delegate void OnTickQuoteReceived(TickQuote TickData);
         public delegate void OnTickPongReceived(TickPong TickData);
         public delegate void OnErrored(string Message);
-        
-        public event OnConnected OnConnect;
+
+        public event OnConnected OnConnect = null!;
         public event OnClosed OnClose = null!;
         public event OnTickReceived OnTick = null!;
         public event OnTickLtpReceived OnTickLtp = null!;
