@@ -10,18 +10,18 @@ namespace AngelOne.SmartApi.Clients.Requests
     public class CandleRequest
     {
         [JsonPropertyName("symboltoken")]
-        public string SymbolToken { get; set; }
+        public string SymbolToken { get; set; } = null!;
 
         [JsonPropertyName("exchange")]
-        public string Exchange { get; set; }
+        public string Exchange { get; set; } = null!;
 
         [JsonPropertyName("interval")]
-        public string Interval { get; set; }
+        public string Interval { get; set; } = null!;
 
         [JsonPropertyName("fromdate")]
-        public string FromDate { get; set; }
+        public string FromDate { get; set; } = null!;
 
         [JsonPropertyName("todate")]
-        public string ToDate { get; set; }
+        public string ToDate { get; set; } = null!;
     }
 }

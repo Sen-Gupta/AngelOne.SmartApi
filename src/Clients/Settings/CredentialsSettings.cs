@@ -8,10 +8,10 @@ namespace AngelOne.SmartApi.Clients.Settings
 {
     public class CredentialsSettings
     {
-        public string ClientCode { get; set; }
-        public string ClientPIN { get; set; }
-        public string TOTPCode { get; set; }
-        public string HistoricalDataKey { get; set; }
-        public string MarketDataKey { get; set; }
+        public string ClientCode { get; set; } = null!;
+        public string ClientPIN { get; set; } = null!;
+        public string TOTPCode { get; set; } = null!;
+        public string HistoricalDataKey { get; set; } = null!;
+        public string MarketDataKey { get; set; } = null!;
     }
 }

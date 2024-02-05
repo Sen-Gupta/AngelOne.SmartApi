@@ -10,6 +10,6 @@ namespace AngelOne.SmartApi.Clients.Responses
     public class LogoutResponse : BaseResponse
     {
         [JsonPropertyName("data")]
-        public string Data { get; set; }
+        public string Data { get; set; } = null!;
     }
 }

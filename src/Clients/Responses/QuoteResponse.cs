@@ -6,7 +6,7 @@ namespace AngelOne.SmartApi.Clients.Responses
     public class QuoteResponse : BaseResponse
     {
         [JsonPropertyName("data")]
-        public QuoteResult Results { get; set; }
+        public QuoteResult? Results { get; set; } 
          
     }
 

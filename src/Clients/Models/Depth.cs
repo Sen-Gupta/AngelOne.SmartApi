@@ -10,9 +10,9 @@ namespace AngelOne.SmartApi.Clients.Models
     public class Depth
     {
         [JsonPropertyName("buy")]
-        public List<DepthItem> Buy { get; set; }
+        public List<DepthItem> Buy { get; set; } = null!;
 
         [JsonPropertyName("sell")]
-        public List<DepthItem> Sell { get; set; }
+        public List<DepthItem> Sell { get; set; } = null!;
     }
 }

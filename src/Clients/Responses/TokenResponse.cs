@@ -11,22 +11,22 @@ namespace AngelOne.SmartApi.Clients.Responses
     {
 
         [JsonPropertyName("data")]
-        public Tokens Tokens { get; set; }
+        public Tokens Tokens { get; set; } = null!;
     }
 
     public class Tokens
     {
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("jwtToken")]
-        public string JwtToken { get; set; }
+        public string JwtToken { get; set; } = null!;
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("refreshToken")]
-        public string RefreshToken { get; set; }
+        public string RefreshToken { get; set; } = null!;
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("feedToken")]
-        public string FeedToken { get; set; }
+        public string FeedToken { get; set; } = null!;
 
         [JsonIgnore]
         public DateTime? Expiry { get; set; }

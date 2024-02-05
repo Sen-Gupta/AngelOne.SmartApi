@@ -34,7 +34,7 @@ namespace AngelOne.SmartApi.Clients
             _configuration = configuration;
             _tokenManager = tokenManager;
             _angelOneAuthClient = angelOneAuthClient;
-            _smartApiSettings = _configuration.GetSection("SmartApi").Get<SmartApiSettings>();
+            _smartApiSettings = _configuration.GetSection("SmartApi").Get<SmartApiSettings>()!;
         }
 
         public async Task<bool> EnsureSession(bool IsHistorical = false)

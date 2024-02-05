@@ -14,14 +14,14 @@ namespace AngelOne.SmartApi.Clients.Sockets
         #region WebSocketv2
 
         private readonly ClientWebSocket _clientWebSocket = new ClientWebSocket();
-        private string _curl;
+        private string _curl = null!;
         private SemaphoreSlim _lockObject = new SemaphoreSlim(1, 1);
 
 
-        public event OnConnectHandler OnConnect;
-        public event OnCloseHandler OnClose;
-        public event OnDataHandler OnData;
-        public event OnErrorHandler OnError;
+        public event OnConnectHandler OnConnect = null!;
+        public event OnCloseHandler OnClose = null!;
+        public event OnDataHandler OnData = null!;
+        public event OnErrorHandler OnError = null!;
 
         public bool IsSocketOpen()
         {
@@ -31,7 +31,7 @@ namespace AngelOne.SmartApi.Clients.Sockets
             return _clientWebSocket.State == WebSocketState.Open;
         }
 
-        public void Connect(string Url, Dictionary<string, string> headers = null)
+        public void Connect(string Url, Dictionary<string, string> headers = null!)
         {
             _curl = Url;
             try

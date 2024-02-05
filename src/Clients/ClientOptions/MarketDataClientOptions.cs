@@ -8,8 +8,8 @@ namespace AngelOne.SmartApi.Clients.ClientOptions
 {
     public class MarketDataClientOptions
     {
-        public string BaseEndpoint { get; set; }
-        public string ClientId { get; set; }    
-        public string ClientPin { get; set; }
+        public string BaseEndpoint { get; set; } = null!;
+        public string ClientId { get; set; } = null!;    
+        public string ClientPin { get; set; } = null!;
     }
 }

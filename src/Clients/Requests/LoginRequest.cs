@@ -11,16 +11,16 @@ namespace AngelOne.SmartApi.Clients.Requests
     {
 
         [JsonPropertyName("clientcode")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull )]
-        public string ClientCode { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string ClientCode { get; set; } = null!;
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("password")]
-        public string PIN { get; set; }
+        public string PIN { get; set; } = null!;
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("totp")]
-        public string TOTP { get; set; }
+        public string TOTP { get; set; } = null!;
     }
     
 }

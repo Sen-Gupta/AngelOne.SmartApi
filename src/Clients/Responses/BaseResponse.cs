@@ -13,9 +13,9 @@ namespace AngelOne.SmartApi.Clients.Responses
         public bool Status { get; set; }
 
         [JsonPropertyName("message")]
-        public string Message { get; set; }
+        public string Message { get; set; } = null!;
 
         [JsonPropertyName("errorcode")]
-        public string ErrorCode { get; set; }
+        public string ErrorCode { get; set; } = null!;
     }
 }

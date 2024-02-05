@@ -36,7 +36,7 @@ namespace AngelOne.SmartApi.Client.Sample
             quoteRequest.Mode = Modes.FULL.ToString();
             quoteRequest.ExchangeNameTokens.Add("NSE", new List<string> { "3045"});
 
-            //var quoteResult = await marketDataClient.GetQuotes(quoteRequest);
+            var quoteResult = await marketDataClient.GetQuotes(quoteRequest);
             
             
             //Candle Request

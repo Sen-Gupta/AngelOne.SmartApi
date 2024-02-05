@@ -28,7 +28,7 @@ namespace AngelOne.SmartApi.Clients
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _configuration = configuration;
             _tokenManager = tokenManager;
-            _smartApiSettings = _configuration.GetSection("SmartApi").Get<SmartApiSettings>();
+            _smartApiSettings = _configuration.GetSection("SmartApi").Get<SmartApiSettings>()!;
         }
 
         public async Task<bool> Login(bool IsHistorical = false)

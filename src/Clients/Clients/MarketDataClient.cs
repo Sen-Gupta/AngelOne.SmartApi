@@ -30,7 +30,7 @@ namespace AngelOne.SmartApi.Clients
             _configuration = configuration;
             _tokenManager = tokenManager;
             _angelOneTokenClient = angelOneTokenClient;
-            _smartApiSettings = _configuration.GetSection("SmartApi").Get<SmartApiSettings>();
+            _smartApiSettings = _configuration.GetSection("SmartApi").Get<SmartApiSettings>()!;
         }
 
 
@@ -49,14 +49,14 @@ namespace AngelOne.SmartApi.Clients
                 if (string.IsNullOrEmpty(apiKey))
                 {
                     System.Console.WriteLine("API Key is null or empty. Please check your appsettings.json file.");
-                    return null;
+                    return null!;
                 }
 
                 //Ensure Token is valid
                 var IsSessionValid = await _angelOneTokenClient.EnsureSession();
                 if (!IsSessionValid)
                 {
-                    return null;
+                    return null!;
                 }
 
                 var apiToken = _tokenManager.GetAPIToken();
@@ -94,7 +94,7 @@ namespace AngelOne.SmartApi.Clients
                 ResponseUtility.HandleUnexpectedException(ex);
             }
 
-            return null;
+            return null!;
         }
 
         /// <summary>
@@ -116,14 +116,14 @@ namespace AngelOne.SmartApi.Clients
                 if (string.IsNullOrEmpty(apiKey))
                 {
                     System.Console.WriteLine("API Key is null or empty. Please check your appsettings.json file.");
-                    return null;
+                    return null!;
                 }
 
                 //Ensure Token is valid
                 var IsSessionValid = await _angelOneTokenClient.EnsureSession();
                 if (!IsSessionValid)
                 {
-                    return null;
+                    return null!;
                 }
 
                 var apiToken = _tokenManager.GetAPIToken();
@@ -141,7 +141,7 @@ namespace AngelOne.SmartApi.Clients
                         quoteResponse.Message.ToLower() == "success" &&
                         string.IsNullOrEmpty(quoteResponse.ErrorCode))
                     {
-                        return quoteResponse.Results;
+                        return quoteResponse.Results!;
                     }
                     else
                     {
@@ -183,14 +183,14 @@ namespace AngelOne.SmartApi.Clients
                 if (string.IsNullOrEmpty(apiKey))
                 {
                     System.Console.WriteLine("API Key is null or empty. Please check your appsettings.json file.");
-                    return null;
+                    return null!;
                 }
 
                 //Ensure Token is valid
                 var IsSessionValid = await _angelOneTokenClient.EnsureSession();
                 if (!IsSessionValid)
                 {
-                    return null;
+                    return null!;
                 }
 
                 var apiToken = _tokenManager.GetAPIToken();
@@ -208,7 +208,7 @@ namespace AngelOne.SmartApi.Clients
                         candleResponse.Message.ToLower() == "success" &&
                         string.IsNullOrEmpty(candleResponse.ErrorCode))
                     {
-                        return candleResponse.GetCandle();
+                        return candleResponse.GetCandle()!;
                     }
                     else
                     {
@@ -228,7 +228,7 @@ namespace AngelOne.SmartApi.Clients
                 ResponseUtility.HandleUnexpectedException(ex);
             }
 
-            return null;
+            return null!;
         }
 
 
@@ -247,14 +247,14 @@ namespace AngelOne.SmartApi.Clients
                 if (string.IsNullOrEmpty(apiKey))
                 {
                     System.Console.WriteLine("API Key is null or empty. Please check your appsettings.json file.");
-                    return null;
+                    return null!;
                 }
 
                 //Ensure Token is valid
                 var IsSessionValid = await _angelOneTokenClient.EnsureSession();
                 if (!IsSessionValid)
                 {
-                    return null;
+                    return null!;
                 }
 
                 var apiToken = _tokenManager.GetAPIToken();

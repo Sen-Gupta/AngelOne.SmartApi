@@ -10,16 +10,16 @@ namespace AngelOne.SmartApi.Clients.Models
     public class FailedQuote
     {
         [JsonPropertyName("exchange")]
-        public string Exchange { get; set; }
+        public string Exchange { get; set; } = null!;
 
         [JsonPropertyName("symbolToken")]
-        public string SymbolToken { get; set; }
+        public string SymbolToken { get; set; } = null!;
 
         [JsonPropertyName("message")]
-        public string Message { get; set; }
+        public string Message { get; set; } = null!;
 
         [JsonPropertyName("errorCode")]
-        public string ErrorCode { get; set; }
+        public string ErrorCode { get; set; } = null!;
 
     }
 }
