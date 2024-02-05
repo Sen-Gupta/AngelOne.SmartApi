@@ -72,6 +72,6 @@ In VS Code choose AngelOne.SmartApi.Client.Sample.csproj and run the application
 Add the following Nuget package to your project:
 
 ```
-dotnet add package AngelOne.SmartApi.Clients --version 1.0.0
+dotnet add package AngelOne.SmartApi.Clients --version 2.0.0
 ```
 Ensur the you update the appsettings .json with your credentials as shown above. Or look at the sample project.
