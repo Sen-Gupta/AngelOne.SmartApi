@@ -19,19 +19,19 @@ namespace AngelOne.SmartApi.Clients.Utilities
                 Console.WriteLine(responseString);
                 if (!string.IsNullOrEmpty(responseString))
                 {
-                    return JsonSerializer.Deserialize<T>(responseString);
+                    return JsonSerializer.Deserialize<T>(responseString)!;
                 }
-                return null;
+                return null!;
             }
             catch (JsonException ex)
             {
                 // Handle JSON parsing errors
                 System.Console.WriteLine($"Error parsing TokenResponse JSON: {ex.Message}");
                 // Log the exception, report it, or perform any necessary actions
-                return null;
+                return null!;
             }
         }
-        public static void HandleLoginFailure(BaseResponse loginResponse)
+        public static void HandleLoginFailure(BaseResponse? loginResponse)
         {
             // Handle specific failure scenarios based on the content of loginResponse
             System.Console.WriteLine($"Login failed. Status: {loginResponse?.Status}, Message: {loginResponse?.Message}, ErrorCode: {loginResponse?.ErrorCode}");

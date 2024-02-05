@@ -9,11 +9,11 @@ namespace AngelOne.SmartApi.Clients.Managers
 {
     public class TokenManager
     {
-        private Tokens _marketLoginToken;
-        private Tokens _historicalLoginToken;
+        private Tokens _marketLoginToken = null!;
+        private Tokens _historicalLoginToken = null!;
 
-        private Tokens _MarketDataAPIToken;
-        private Tokens _HistoricalDataAPIToken;
+        private Tokens _MarketDataAPIToken = null!;
+        private Tokens _HistoricalDataAPIToken = null!;
 
 
         public bool IsLoginValid(bool IsHistorical = false)

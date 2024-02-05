@@ -14,7 +14,7 @@ namespace AngelOne.SmartApi.Clients.Utilities
 {
     public static class MachineInfoUtility
     {
-        private static MachineInfo _machineInformation;
+        private static MachineInfo _machineInformation = null!;
 
         #region Private Methods
         public static async Task<MachineInfo> GetMachineInfo()
@@ -56,7 +56,7 @@ namespace AngelOne.SmartApi.Clients.Utilities
                 {
                     string publicIpJson = await client.GetStringAsync("https://api64.ipify.org?format=json");
                     var ipObject = JsonSerializer.Deserialize<Dictionary<string, string>>(publicIpJson);
-                    publicIp = ipObject?["ip"];
+                    publicIp = ipObject?["ip"]!;
                 }
             }
             catch (Exception ex)

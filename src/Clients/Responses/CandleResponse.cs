@@ -13,9 +13,9 @@ namespace AngelOne.SmartApi.Clients.Responses
     public class CandleResponse: BaseResponse
     {
         [JsonPropertyName("data")]
-        public List<JsonDocument> Results { get; set; }
+        public List<JsonDocument>? Results { get; set; }
 
-        public List<CandleData> GetCandle()
+        public List<CandleData>? GetCandle()
         {
             return Results?.Select(c => new CandleData(c)).ToList();
         }

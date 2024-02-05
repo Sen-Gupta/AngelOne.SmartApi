@@ -10,7 +10,7 @@ namespace AngelOne.SmartApi.Clients.Requests
     public class QuoteRequest
     {
         [JsonPropertyName("mode")]
-        public string Mode { get; set; }
+        public string Mode { get; set; } = null!;
 
         [JsonPropertyName("exchangeTokens")]
         public Dictionary<string, List<string>> ExchangeNameTokens { get; set; } = new Dictionary<string, List<string>>();
