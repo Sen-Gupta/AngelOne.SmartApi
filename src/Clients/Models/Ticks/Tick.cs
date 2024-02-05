@@ -15,6 +15,6 @@ namespace AngelOne.SmartApi.Clients.Models.Ticks
         public double LowerCircuit { get; set; }
         public double High52Week { get; set; }
         public double Low52Week { get; set; }
-        public BestFiveItem[] Best5 { get; set; }
+        public BestFiveItem[]? Best5 { get; set; }
     }
 }

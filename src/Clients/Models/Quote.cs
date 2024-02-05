@@ -10,13 +10,13 @@ namespace AngelOne.SmartApi.Clients.Models
     public class Quote
     {
         [JsonPropertyName("exchange")]
-        public string Exchange { get; set; }
+        public string Exchange { get; set; } = null!;
 
         [JsonPropertyName("tradingSymbol")]
-        public string TradingSymbol { get; set; }
+        public string TradingSymbol { get; set; } = null!;
 
         [JsonPropertyName("symbolToken")]
-        public string SymbolToken { get; set; }
+        public string SymbolToken { get; set; } = null!;
 
         [JsonPropertyName("ltp")]
         public double LTP { get; set; }
@@ -37,10 +37,10 @@ namespace AngelOne.SmartApi.Clients.Models
         public int LastTradeQty { get; set; }
 
         [JsonPropertyName("exchFeedTime")]
-        public string ExchFeedTime { get; set; }
+        public string ExchFeedTime { get; set; } = null!;
 
         [JsonPropertyName("exchTradeTime")]
-        public string ExchTradeTime { get; set; }
+        public string ExchTradeTime { get; set; } = null!;
 
         [JsonPropertyName("netChange")]
         public double NetChange { get; set; }
@@ -76,6 +76,6 @@ namespace AngelOne.SmartApi.Clients.Models
         public double Week52High { get; set; }
 
         [JsonPropertyName("depth")]
-        public DepthItem Depth { get; set; }
+        public DepthItem? Depth { get; set; }
     }
 }

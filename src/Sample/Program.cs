@@ -34,7 +34,7 @@ namespace AngelOne.SmartApi.Client.Sample
             quoteRequest.Mode = Constants.Modes.FULL;
             quoteRequest.ExchangeNameTokens.Add("NSE", new List<string> { "3045" });
 
-            //var quoteResult = await marketDataClient.GetQuotes(quoteRequest);
+            var quoteResult = await marketDataClient.GetQuotes(quoteRequest);
 
 
             //Candle Request
@@ -45,7 +45,7 @@ namespace AngelOne.SmartApi.Client.Sample
             candleRequest.FromDate = DateTime.Now.Date.AddDays(-7).ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
             candleRequest.ToDate = DateTime.Now.Date.AddDays(-2).ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
 
-            //var candleResponse = await marketDataClient.GetCandle(candleRequest);
+            var candleResponse = await marketDataClient.GetCandle(candleRequest);
 
             //RMS Limit
             var rmsLimit = await marketDataClient.GetRMSLimit();

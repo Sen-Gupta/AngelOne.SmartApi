@@ -34,24 +34,24 @@ namespace AngelOne.SmartApi.Clients
             _configuration = configuration;
             _tokenManager = tokenManager;
             _angelOneAuthClient = angelOneAuthClient;
-            _smartApiSettings = _configuration.GetSection("SmartApi").Get<SmartApiSettings>();
+            _smartApiSettings = _configuration.GetSection("SmartApi").Get<SmartApiSettings>()!;
         }
 
-        public async Task<bool> EnsureSession(bool IsHistorical = false)
+        public async Task<bool> EnsureSession()
         {
-            var IsLoginValid = _tokenManager.IsTokenValid(IsHistorical);
+            var IsLoginValid = _tokenManager.IsTokenValid();
             if (IsLoginValid)
             {
                 return true;
             }
             else
             {
-                return await GetToken(IsHistorical);
+                return await GetToken();
             }
         }
 
         //We need to Login to get the Token
-        public async Task<bool> GetToken(bool IsHistorical = false)
+        public async Task<bool> GetToken()
         {
             try
             {
@@ -67,13 +67,13 @@ namespace AngelOne.SmartApi.Clients
 
 
                 //Ensure Login Session is valid
-                var IsLoginValid = await _angelOneAuthClient.EnsureSession(IsHistorical);
+                var IsLoginValid = await _angelOneAuthClient.EnsureSession();
                 if(!IsLoginValid)
                 {
                     return false;
                 }
 
-                var loginToken = _tokenManager.GetLoginToken(IsHistorical);
+                var loginToken = _tokenManager.GetLoginToken();
 
                 await RequestUtility.ApplyHeaders(_httpClient, apiKey, loginToken.JwtToken);
 
@@ -89,7 +89,7 @@ namespace AngelOne.SmartApi.Clients
                         string.IsNullOrEmpty(tokenResponse.ErrorCode))
                     {
                         // Successfully logged in
-                        _tokenManager.SetAPIToken(tokenResponse.Tokens, IsHistorical);
+                        _tokenManager.SetAPIToken(tokenResponse.Tokens);
                         return true;
                     }
                     else
