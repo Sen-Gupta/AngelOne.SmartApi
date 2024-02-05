@@ -9,8 +9,6 @@ using Microsoft.Extensions.Configuration;
 using OtpNet;
 
 using System.Net.Http.Json;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace AngelOne.SmartApi.Clients
 {
@@ -82,16 +80,16 @@ namespace AngelOne.SmartApi.Clients
             return false;
         }
 
-        public async Task<bool> EnsureSession(bool IsHistorical = false)
+        public async Task<bool> EnsureSession()
         {
-            var IsLoginValid = _tokenManager.IsLoginValid(IsHistorical);
+            var IsLoginValid = _tokenManager.IsLoginValid();
             if (IsLoginValid)
             {
                 return true;
             }
             else
             {
-                return await Login(IsHistorical);
+                return await Login();
             }
         }
 
